@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Problem List</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        html, body {
+            height: 100%;
+        }
+        .wrapper {
+            min-height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        .content {
+            flex: 1;
+        }
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+    <!-- Header -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">OJ</a>
+            
+        </div>
+    </nav>
+
+    <!-- Content -->
+    <div class="container content">
+        <h2 class="mb-4">Problem List</h2>
+        <table class="table table-striped table-bordered">
+            <thead class="table-dark">
+                <tr>
+                    <th>S.No</th>
+                    <th>Title</th>
+                    <th>Difficulty</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for problem in problems %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ problem.title }}</td>
+                    <td>
+                        <span class="badge 
+                            {% if problem.difficulty == 'Easy' %}bg-success
+                            {% elif problem.difficulty == 'Medium' %}bg-warning
+                            {% elif problem.difficulty == 'Hard' %}bg-danger
+                            {% endif %}">
+                            {{ problem.difficulty }}
+                        </span>
+                    </td>
+                    <td>
+                        <a href="{% url 'problem_detail' problem.id %}" class="btn btn-primary btn-sm">Solve Now</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="text-center">No problems added yet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white text-center py-3 mt-auto">
+        <div class="container">
+            <p class="mb-0">© 2025 Online Judge | Built with Django & Bootstrap</p>
+        </div>
+    </footer>
+</div>
+
+</body>
+</html>
