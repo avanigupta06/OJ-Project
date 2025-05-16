@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from home.models import Problem
+from .forms import ProblemForm
 from django.http import HttpResponse
 from django.template import loader
 
@@ -22,6 +23,15 @@ def problem_detail(request, id):
     }
     return HttpResponse(template.render(context, request))
 
-
+def add_problem(request):
+    if request.method == 'POST':
+        form = ProblemForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('/problems/') 
+    else:
+        form = ProblemForm()
+    
+    return render(request, 'add_problem.html', {'form': form})
 
 
