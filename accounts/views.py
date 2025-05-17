@@ -28,8 +28,7 @@ def register_user(request):
             return redirect('/auth/register/')
 
         # Create user
-        user = User.objects.create_user(username=username, email=email)
-        user.first_name = fullname
+        user = User.objects.create_user(username=username,first_name = fullname, email=email)
         user.set_password(password1)
         user.save()
 
@@ -51,7 +50,14 @@ def login_user(request):
         if user is not None:
             login(request, user)
             messages.success(request, 'Login successful.')
-            return redirect('/problems/')  # Change to your dashboard URL
+            user_type = user.userextension.user_type
+
+            if user_type == 'normal':
+                return redirect('/problems/')
+            elif user_type == 'setter':
+                return redirect('/problem_add/')
+            elif user_type == 'admin':
+                return redirect('/admin/')
         else:
             messages.error(request, 'Invalid username or password.')
             return redirect('/auth/login/')
