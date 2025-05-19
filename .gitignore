@@ -1,3 +1,5 @@
 myenv
 db.sqlite3
 commands.txt
+__pycache__/
+*.pyc

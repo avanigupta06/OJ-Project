@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from home.models import Problem
+from compiler.forms import CodeSubmissionForm
 from .forms import ProblemForm
 from django.http import HttpResponse
 from django.template import loader
@@ -17,9 +18,11 @@ def problem_list(request):
 
 def problem_detail(request, id):
     req_problem = Problem.objects.get(id=id)
+    form = CodeSubmissionForm()
     template = loader.get_template("problem_detail.html")
     context = {
         "req_problem":req_problem,
+        "form": form,
     }
     return HttpResponse(template.render(context, request))
 
