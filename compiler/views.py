@@ -6,6 +6,7 @@ from home.models import Problem
 from django.conf import settings
 from pathlib import Path
 import uuid
+import os
 import subprocess
 
 @login_required
@@ -78,9 +79,9 @@ def run_code(language, code, input_data):
     if language == "cpp":
         executable_path = codes_dir / unique
         compile_result = subprocess.run(
-            ["clang++", str(code_file_path), "-o", str(executable_path)],
-            stdout=subprocess.PIPE, stderr=subprocess.PIPE
-        )
+                ["g++", str(code_file_path), "-o", str(executable_path)],
+                stdout=subprocess.PIPE, stderr=subprocess.PIPE
+            )
         if compile_result.returncode == 0:
             with open(input_file_path, "r") as input_file, open(output_file_path, "w") as output_file:
                 subprocess.run(
@@ -95,14 +96,15 @@ def run_code(language, code, input_data):
             return compile_result.stderr.decode('utf-8')
 
     elif language == "python":
+        python_cmd = "python" if os.name == "nt" else "python3"
         with open(input_file_path, "r") as input_file, open(output_file_path, "w") as output_file:
             subprocess.run(
-                ["python3", str(code_file_path)],
+                [python_cmd, str(code_file_path)],
                 stdin=input_file,
                 stdout=output_file,
                 stderr=subprocess.STDOUT,
                 timeout=5
-            )
+        )
 
     with open(output_file_path, "r") as output_file:
         output_data = output_file.read()

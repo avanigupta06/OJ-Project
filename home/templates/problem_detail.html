@@ -7,64 +7,80 @@
 </head>
 <body>
 
-<!-- Header -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="{% url 'problem_list' %}">OJ</a>
-        
-    </div>
-</nav>
+<header class="p-3 text-bg-dark">
+    <div class="container">
+        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+            <a href="{% url 'problem_list' %}" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
+                <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap"><use xlink:href="#bootstrap"></use></svg>
+                <span class="fs-4">OJ</span>
+            </a>
 
-<!-- Content -->
-<div class="container">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2>{{ req_problem.title }}</h2>
-        <span class="badge 
-            {% if req_problem.difficulty == 'Easy' %}bg-success
-            {% elif req_problem.difficulty == 'Medium' %}bg-warning
-            {% elif req_problem.difficulty == 'Hard' %}bg-danger
-            {% endif %}">
-            {{ req_problem.difficulty }}
-        </span>
-    </div>
+            <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+                <li><a href="#" class="nav-link px-2 text-secondary">Home</a></li>
+                <li><a href="#" class="nav-link px-2 text-white">Features</a></li>
+                <li><a href="#" class="nav-link px-2 text-white">FAQs</a></li>
+                <li><a href="#" class="nav-link px-2 text-white">About</a></li>
+            </ul>
 
-    <div class="mb-4">
-        <h5>Description:</h5>
-        <p>{{ req_problem.description }}</p>
-    </div>
+            <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
+                <input type="search" class="form-control form-control-dark text-bg-dark" placeholder="Search..." aria-label="Search">
+            </form>
 
-    <div class="row mb-4">
-        <div class="col-md-6">
-            <h6>Sample Input:</h6>
-            <pre class="bg-light p-3 border">{{ req_problem.input_testcase }}</pre>
-        </div>
-        <div class="col-md-6">
-            <h6>Sample Output:</h6>
-            <pre class="bg-light p-3 border">{{ req_problem.output_testcase }}</pre>
+            <div class="text-end">
+                <button type="button" class="btn btn-warning">Logout</button>
+            </div>
         </div>
     </div>
+</header>
 
-    <form method="POST" action="{% url 'run_code' req_problem.id %}">
-    {% csrf_token %}
+<div class="container mt-4">
+    <div class="row"> <div class="col-md-5">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2>{{ req_problem.title }}</h2>
+                <span class="badge
+                    {% if req_problem.difficulty == 'Easy' %}bg-success
+                    {% elif req_problem.difficulty == 'Medium' %}bg-warning
+                    {% elif req_problem.difficulty == 'Hard' %}bg-danger
+                    {% endif %}">
+                    {{ req_problem.difficulty }}
+                </span>
+            </div>
 
-    <div class="mb-3 d-flex justify-content-end">
-        {{ form.language }}
-    </div>
+            <div class="mb-4">
+                <h5>Description:</h5>
+                <p>{{ req_problem.description }}</p>
+            </div>
 
-    <div class="mb-3">
-        {{ form.code }}
-    </div>
+            <div class="row mb-4">
+                <div class="col-md-12">
+                    <h6>Sample Input:</h6>
+                    <pre class="bg-light p-3 border">{{ req_problem.input_testcase }}</pre>
+                </div>
+                <div class="col-md-12">
+                    <h6>Sample Output:</h6>
+                    <pre class="bg-light p-3 border">{{ req_problem.output_testcase }}</pre>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-7">
+            <form method="POST" action="{% url 'run_code' req_problem.id %}">
+                {% csrf_token %}
+                <div class="mb-3 d-flex justify-content-end">
+                    {{ form.language }}
+                </div>
 
-    <div class="d-flex gap-2">
-        <button type="submit" name="action" value="run" class="btn btn-secondary">Run</button>
-        <button type="submit" name="action" value="submit" class="btn btn-success">Submit</button>
-    </div>
-</form>
+                <div class="mb-3">
+                    {{ form.code }}
+                </div>
 
+                <div class="d-flex gap-2">
+                    <button type="submit" name="action" value="run" class="btn btn-secondary">Run</button>
+                    <button type="submit" name="action" value="submit" class="btn btn-success">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div> </div>
 
-</div>
-
-<!-- Footer -->
 <footer class="bg-dark text-white text-center py-3 mt-4">
     <div class="container">
         <p class="mb-0">© 2025 Online Judge | Built with Django & Bootstrap</p>
