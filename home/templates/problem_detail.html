@@ -73,6 +73,20 @@
                     {{ form.code }}
                 </div>
 
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="id_input_data" class="form-label">Custom Input:</label>
+                        {{ form.input_data }}
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <label class="form-label">Output:</label>
+                        <pre class="form-control bg-light" style="height: 100px; overflow-y: auto;">{{ output }}</pre>
+                    </div>
+                    
+                </div>
+                 
+                
                 <div class="d-flex gap-2">
                     <button type="submit" name="action" value="run" class="btn btn-secondary">Run</button>
                     <button type="submit" name="action" value="submit" class="btn btn-success">Submit</button>
@@ -83,7 +97,7 @@
 
 <footer class="bg-dark text-white text-center py-3 mt-4">
     <div class="container">
-        <p class="mb-0">© 2025 Online Judge | Built with Django & Bootstrap</p>
+        <p class="mb-0">© 2025 Online Judge </p>
     </div>
 </footer>
 

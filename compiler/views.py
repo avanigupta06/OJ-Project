@@ -19,7 +19,7 @@ def run_code_view(request, problem_id):
             submission = form.save(commit=False)
             submission.user = request.user
             submission.problem = problem
-            submission.input_data = problem.input_testcase
+            submission.input_data = form.cleaned_data['input_data']
             submission.expected_output = problem.output_testcase
 
             output = run_code(
@@ -30,8 +30,15 @@ def run_code_view(request, problem_id):
             submission.output_data = output
             submission.save()
 
-            # Redirect to a new page to show the output of run
-            return redirect("run_result", submission_id=submission.id)
+            if request.POST.get("action") == "run":
+                return render(request, "problem_detail.html", {
+                    "req_problem": problem,
+                    "form": form,
+                    "output": output
+                })
+            else:
+                return redirect("run_result", submission_id=submission.id)
+
     else:
         form = CodeSubmissionForm()
 
