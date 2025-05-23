@@ -19,3 +19,11 @@ class Problem(models.Model):
 
     def __str__(self):
         return f"{self.title}"
+
+class HiddenTestCase(models.Model):
+    problem = models.ForeignKey("home.Problem", on_delete=models.CASCADE, related_name="hidden_testcases")
+    input_data = models.TextField()
+    expected_output = models.TextField()
+
+    def __str__(self):
+        return f"Hidden TestCase for Problem {self.problem.title}"

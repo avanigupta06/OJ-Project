@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from home.models import HiddenTestCase
 from compiler.forms import CodeSubmissionForm
 from compiler.models import CodeSubmission
 from home.models import Problem
@@ -22,21 +23,43 @@ def run_code_view(request, problem_id):
             submission.input_data = form.cleaned_data['input_data']
             submission.expected_output = problem.output_testcase
 
-            output = run_code(
-                submission.language,
-                submission.code,
-                submission.input_data
-            )
-            submission.output_data = output
-            submission.save()
+            action = request.POST.get("action")
 
-            if request.POST.get("action") == "run":
+            if action == "run":
+                # Handle normal 'Run' action
+                output = run_code(
+                    submission.language,
+                    submission.code,
+                    submission.input_data
+                )
+                submission.output_data = output
+                submission.save()
+
                 return render(request, "problem_detail.html", {
                     "req_problem": problem,
                     "form": form,
                     "output": output
                 })
-            else:
+
+            elif action == "submit":
+                hidden_testcases = HiddenTestCase.objects.filter(problem=problem)
+                all_passed = True
+
+                for test in hidden_testcases:
+                    test_output = run_code(
+                        submission.language,
+                        submission.code,
+                        test.input_data
+                    ).strip()
+                    expected_output = test.expected_output.strip()
+
+                    if test_output != expected_output:
+                        all_passed = False
+                        break
+
+                submission.output_data = "Accepted" if all_passed else "Rejected"
+                submission.save()
+
                 return redirect("run_result", submission_id=submission.id)
 
     else:
@@ -46,6 +69,7 @@ def run_code_view(request, problem_id):
         "req_problem": problem,
         "form": form
     })
+
 
 
 def run_code(language, code, input_data):
