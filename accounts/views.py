@@ -6,6 +6,9 @@ from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
 # Create your views here.
 
+def dashboard(request):
+    return render(request, 'dashboard.html')
+
 def register_user(request):
     if request.method == 'POST':
         username = request.POST.get('username')
