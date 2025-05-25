@@ -4,42 +4,109 @@
     <meta charset="UTF-8" />
     <title>All Submissions</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        main {
+            flex: 1;
+        }
+        footer {
+            background-color: #f8f9fa;
+            padding: 1rem 0;
+        }
+    </style>
 </head>
 <body>
-<div class="container mt-4">
-    <h2>All Submissions</h2>
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>User</th>
-                <th>Problem</th>
-                <th>Language</th>
-                <th>Result</th>
-                <th>Submitted At</th>
-                <th>View Output</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for submission in submissions %}
-            <tr>
-                <td>{{ submission.id }}</td>
-                <td>{{ submission.user.username }}</td>
-                <td>{{ submission.problem.title }}</td>
-                <td>{{ submission.language }}</td>
-                <td>{{ submission.output_data|truncatechars:50 }}</td>
-                <td>{{ submission.submitted_at }}</td>
-                <td>
-                    <a href="{% url 'run_result' submission.id %}" class="btn btn-sm btn-primary">View</a>
-                </td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="7" class="text-center">No submissions found.</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
+    <!-- Header/Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Online Judge</a>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/home/problems/">Problem List</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/home/problem_add/">Add Problem</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/auth/logout/">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container mt-4">
+        <h2>All Submissions</h2>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>User</th>
+                    <th>Problem</th>
+                    <th>Language</th>
+                    <th>Result</th>
+                    <th>Submitted At</th>
+                    <th>View Output</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for submission in page_obj %}
+                <tr>
+                    <td>{{ submission.id }}</td>
+                    <td>{{ submission.user.username }}</td>
+                    <td>{{ submission.problem.title }}</td>
+                    <td>{{ submission.language }}</td>
+                    <td>{{ submission.output_data|truncatechars:50 }}</td>
+                    <td>{{ submission.timestamp }}</td>
+                    <td>
+                        <a href="{% url 'run_result' submission.id %}" class="btn btn-sm btn-primary">View</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="text-center">No submissions found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Pagination -->
+        <nav>
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled"><span class="page-link">Previous</span></li>
+                {% endif %}
+
+                <li class="page-item disabled"><span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span></li>
+
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled"><span class="page-link">Next</span></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </main>
+
+    <!-- Footer -->
+    <footer class="text-center mt-4">
+        <div class="container">
+            <p class="mb-0">&copy; {{ year|default:"2025" }} Online Judge Platform. All rights reserved.</p>
+        </div>
+    </footer>
 </body>
 </html>

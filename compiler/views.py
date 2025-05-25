@@ -17,24 +17,14 @@ def run_code_view(request, problem_id):
     if request.method == "POST":
         form = CodeSubmissionForm(request.POST)
         if form.is_valid():
-            submission = form.save(commit=False)
-            submission.user = request.user
-            submission.problem = problem
-            submission.input_data = form.cleaned_data['input_data']
-            submission.expected_output = problem.output_testcase
-
             action = request.POST.get("action")
+            code = form.cleaned_data["code"]
+            language = form.cleaned_data["language"]
+            input_data = form.cleaned_data["input_data"]
 
             if action == "run":
-                # Handle normal 'Run' action
-                output = run_code(
-                    submission.language,
-                    submission.code,
-                    submission.input_data
-                )
-                submission.output_data = output
-                submission.save()
-
+                # Just run code (do not save)
+                output = run_code(language, code, input_data)
                 return render(request, "problem_detail.html", {
                     "req_problem": problem,
                     "form": form,
@@ -42,13 +32,20 @@ def run_code_view(request, problem_id):
                 })
 
             elif action == "submit":
+                # save form
+                submission = form.save(commit=False)
+                submission.user = request.user
+                submission.problem = problem
+                submission.input_data = input_data
+                submission.expected_output = problem.output_testcase
+
                 hidden_testcases = HiddenTestCase.objects.filter(problem=problem)
                 all_passed = True
 
                 for test in hidden_testcases:
                     test_output = run_code(
-                        submission.language,
-                        submission.code,
+                        language,
+                        code,
                         test.input_data
                     ).strip()
                     expected_output = test.expected_output.strip()
@@ -69,6 +66,7 @@ def run_code_view(request, problem_id):
         "req_problem": problem,
         "form": form
     })
+
 
 
 
@@ -152,7 +150,7 @@ from django.core.paginator import Paginator
 
 @login_required
 def submission_list_view(request):
-    submissions = CodeSubmission.objects.all().order_by('-submitted_at')
+    submissions = CodeSubmission.objects.all().order_by('-timestamp')
     paginator = Paginator(submissions, 10)  # 10 submissions per page
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)

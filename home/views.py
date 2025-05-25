@@ -31,7 +31,7 @@ def add_problem(request):
         form = ProblemForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('/problems/') 
+            return redirect('/home/problems/') 
     else:
         form = ProblemForm()
     

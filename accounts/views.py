@@ -56,9 +56,9 @@ def login_user(request):
             user_type = user.userextension.user_type
 
             if user_type == 'normal':
-                return redirect('/problems/')
+                return redirect('/home/problems/')
             elif user_type == 'setter':
-                return redirect('/home/problem_add/')
+                return redirect('/compiler/submissions/')
             elif user_type == 'admin':
                 return redirect('/admin/')
         else:
