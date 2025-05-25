@@ -1,9 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from home.models import HiddenTestCase
+from django.core.paginator import Paginator
 from compiler.forms import CodeSubmissionForm
 from compiler.models import CodeSubmission
-from home.models import Problem
+from home.models import Problem, HiddenTestCase
 from django.conf import settings
 from pathlib import Path
 import uuid
@@ -146,3 +146,15 @@ def run_code(language, code, input_data):
 def run_result(request, submission_id):
     submission = get_object_or_404(CodeSubmission, id=submission_id)
     return render(request, "run_result.html", {"submission": submission})
+
+
+from django.core.paginator import Paginator
+
+@login_required
+def submission_list_view(request):
+    submissions = CodeSubmission.objects.all().order_by('-submitted_at')
+    paginator = Paginator(submissions, 10)  # 10 submissions per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    return render(request, "submission_list.html", {"page_obj": page_obj})

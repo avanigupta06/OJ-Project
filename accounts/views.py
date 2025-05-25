@@ -58,7 +58,7 @@ def login_user(request):
             if user_type == 'normal':
                 return redirect('/problems/')
             elif user_type == 'setter':
-                return redirect('/problem_add/')
+                return redirect('/home/problem_add/')
             elif user_type == 'admin':
                 return redirect('/admin/')
         else:
