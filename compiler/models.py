@@ -19,6 +19,8 @@ class CodeSubmission(models.Model):
     expected_output = models.TextField()
     output_data = models.TextField(null=True, blank=True)
     timestamp = models.DateTimeField(auto_now_add=True)
+    ai_feedback = models.TextField(null=True, blank=True)
+
 
     def __str__(self):
         return f"{self.user.username} - {self.problem.title} "

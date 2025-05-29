@@ -1,4 +1,5 @@
 myenv
+.env
 db.sqlite3
 commands.txt
 __pycache__/
