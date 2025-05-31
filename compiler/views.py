@@ -4,7 +4,7 @@ from django.core.paginator import Paginator
 from compiler.forms import CodeSubmissionForm
 from compiler.models import CodeSubmission
 from home.models import Problem, HiddenTestCase
-from compiler.utils import get_code_review 
+# from compiler.utils import get_code_review 
 from django.conf import settings
 from pathlib import Path
 import uuid
@@ -58,8 +58,8 @@ def run_code_view(request, problem_id):
                 submission.output_data = "Accepted" if all_passed else "Rejected"
 
                 # ai review
-                review = get_code_review(language, problem.description)
-                submission.ai_feedback = review
+                # review = get_code_review(language, problem.description)
+                # submission.ai_feedback = review
 
 
                 submission.save()
@@ -163,3 +163,10 @@ def submission_list_view(request):
     page_obj = paginator.get_page(page_number)
     
     return render(request, "submission_list.html", {"page_obj": page_obj})
+
+@login_required
+def submission_history_view(request):
+    submissions = CodeSubmission.objects.filter(user=request.user).select_related('problem').order_by('-timestamp')
+    return render(request, 'submission_history.html', {
+        "submissions": submissions
+    })

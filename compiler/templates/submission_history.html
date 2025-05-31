@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>My Submission History</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body class="d-flex flex-column min-vh-100">
+
+<!-- Header / Navbar -->
+<header class="p-3 text-bg-dark mb-4">
+  <div class="container">
+    <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+      
+      <!-- Brand -->
+      <a href="{% url 'problem_list' %}" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
+        <span class="fs-4 me-3">OJ</span>
+      </a>
+
+      <!-- Nav Links -->
+      <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+        <li><a href="{% url 'problem_list' %}" class="nav-link px-2 text-white">Problems</a></li>
+        <li><a href="{% url 'my_submissions' %}" class="nav-link px-2 text-secondary">My Submissions</a></li>
+      </ul>
+
+      <!-- Logout Button -->
+      <div class="text-end">
+        <form method="post" action="{% url 'logout' %}">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-warning">Logout</button>
+        </form>
+      </div>
+      
+    </div>
+  </div>
+</header>
+
+<!-- Main Content -->
+<div class="container mb-5">
+    <h2 class="mb-4">My Submission History</h2>
+
+    {% if submissions %}
+    <div class="table-responsive">
+      <table class="table table-striped table-bordered align-middle">
+          <thead class="table-dark">
+              <tr>
+                  <th scope="col">Problem</th>
+                  <th scope="col">Language</th>
+                  <th scope="col">Result</th>
+                  <th scope="col">Submission Time</th>
+              </tr>
+          </thead>
+          <tbody>
+              {% for sub in submissions %}
+              <tr>
+                  <td>
+                    <a href="{% url 'problem_detail' sub.problem.id %}" class="text-decoration-none">
+                      {{ sub.problem.title }}
+                    </a>
+                  </td>
+                  <td>{{ sub.language }}</td>
+                  <td>
+                      {% if sub.output_data == "Accepted" %}
+                          <span class="badge bg-success">Accepted</span>
+                      {% else %}
+                          <span class="badge bg-danger">Rejected</span>
+                      {% endif %}
+                  </td>
+                  <td>{{ sub.timestamp|date:"M d, Y H:i" }}</td>
+              </tr>
+              {% endfor %}
+          </tbody>
+      </table>
+    </div>
+    {% else %}
+      <div class="alert alert-info">You have not made any submissions yet.</div>
+    {% endif %}
+</div>
+
+<!-- Footer -->
+<footer class="bg-dark text-white text-center py-3 mt-auto">
+    <div class="container">
+        <p class="mb-0">© 2025 Online Judge | Built with Django & Bootstrap</p>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
