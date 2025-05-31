@@ -7,16 +7,21 @@ def get_code_review(code, problem_desc):
     
     genai.configure(api_key=settings.GEMINI_API_KEY)
     model = genai.GenerativeModel("gemini-2.0-flash")
-    prompt = f"""You are a code reviewer. Analyze the following code and problem description.
-    
-    Give concise review of the code. Also, provide a list of potential improvements, suggestions for the code and edge cases if any.
-    Do not use any markdown symbols like **, *, or ```.
+    prompt = f"""
+You are a code reviewer. Given the following problem description and code:
 
-    Problem:
-    {problem_desc}
-    
-    Code:
-    {code}
+Problem:
+{problem_desc}
+
+Code:
+{code}
+
+Provide a **short**, plain-text review (under 100 words) with:
+- Key feedback
+- Suggestions for improvement
+- Mention edge cases if needed
+
+Do NOT include code snippets or examples. Avoid using stars, bullet points, or markdown formatting.
     """
 
 
