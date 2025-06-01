@@ -4,6 +4,7 @@ from compiler.models import CodeSubmission
 LANGUAGE_CHOICES = [
     ('python', 'Python'),
     ('cpp', 'C++'),
+    ('c', 'C'),
 ]
 
 
@@ -15,7 +16,7 @@ class CodeSubmissionForm(forms.ModelForm):
         fields = ['language', 'code', 'input_data']
         widgets = {
             'code': forms.Textarea(attrs={
-                'class': 'form-control',  # ⬅️ Bootstrap input style
+                'class': 'form-control',
                 'rows': 14,
                 'cols': 80,
                 'placeholder': 'Write your code here...',

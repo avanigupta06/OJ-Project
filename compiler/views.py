@@ -95,6 +95,7 @@ def run_code(language, code, input_data):
     ext_map = {
         "python": "py",
         "cpp": "cpp",
+        "c" : "c",
     }
     file_ext = ext_map.get(language, "txt")
 
@@ -116,6 +117,25 @@ def run_code(language, code, input_data):
         executable_path = codes_dir / unique
         compile_result = subprocess.run(
                 ["g++", str(code_file_path), "-o", str(executable_path)],
+                stdout=subprocess.PIPE, stderr=subprocess.PIPE
+            )
+        if compile_result.returncode == 0:
+            with open(input_file_path, "r") as input_file, open(output_file_path, "w") as output_file:
+                subprocess.run(
+                    [str(executable_path)],
+                    stdin=input_file,
+                    stdout=output_file,
+                    stderr=subprocess.STDOUT,
+                    timeout=5
+                )
+        else:
+            # Capture compile errors
+            return compile_result.stderr.decode('utf-8')
+        
+    elif language == "c":
+        executable_path = codes_dir / unique
+        compile_result = subprocess.run(
+                ["gcc", str(code_file_path), "-o", str(executable_path)],
                 stdout=subprocess.PIPE, stderr=subprocess.PIPE
             )
         if compile_result.returncode == 0:

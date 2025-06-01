@@ -9,6 +9,7 @@ class CodeSubmission(models.Model):
     LANGUAGE_CHOICES = [
         ('python', 'Python'),
         ('cpp', 'C++'),
+        ('c', 'C'),
     ]
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
