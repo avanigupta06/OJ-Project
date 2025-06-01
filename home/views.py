@@ -1,13 +1,15 @@
 from django.shortcuts import render, redirect
-from home.models import Problem
+from home.models import Problem, HiddenTestCase
 from compiler.forms import CodeSubmissionForm
 from compiler.models import CodeSubmission
-from .forms import ProblemForm
+from home.forms import ProblemForm, HiddenTestCaseForm
 from django.http import HttpResponse
 from django.template import loader
+from django.contrib.auth.decorators import login_required
 
 
 # Create your views here.
+
 
 def problem_list(request):
     problems = Problem.objects.all()
@@ -37,15 +39,26 @@ def problem_detail(request, id):
     }
     return HttpResponse(template.render(context, request))
 
+@login_required
 def add_problem(request):
     if request.method == 'POST':
         form = ProblemForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('/home/problems/') 
+            return redirect('/home/problems/')
     else:
         form = ProblemForm()
     
     return render(request, 'add_problem.html', {'form': form})
 
 
+@login_required
+def add_hidden_testcase(request):
+    if request.method == 'POST':
+        form = HiddenTestCaseForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('/compiler/submissions/')
+    else:
+        form = HiddenTestCaseForm()
+    return render(request, 'add_hidden_testcase.html', {'form': form})

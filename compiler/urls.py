@@ -4,6 +4,6 @@ from compiler.views import run_code_view, run_result, submission_list_view, subm
 urlpatterns = [
     path("run/<int:problem_id>/", run_code_view, name="run_code"),
     path("run/result/<int:submission_id>/", run_result, name="run_result"),
-     path('submissions/', submission_list_view, name='submission_list'),
-     path('my_submissions/', submission_history_view, name='my_submissions'),
+    path('submissions/', submission_list_view, name='submission_list'),
+    path('my_submissions/', submission_history_view, name='my_submissions'),
 ]
