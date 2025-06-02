@@ -58,7 +58,7 @@ def login_user(request):
             if user_type == 'normal':
                 return redirect('/home/problems/')
             elif user_type == 'setter':
-                return redirect('/compiler/submissions/')
+                return redirect('/home/problems/')
             elif user_type == 'admin':
                 return redirect('/admin/')
         else:

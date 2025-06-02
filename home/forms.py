@@ -9,7 +9,7 @@ class ProblemForm(forms.ModelForm):
         model = Problem
         fields = ['title', 'description', 'difficulty', 'input_testcase', 'output_testcase']
         widgets = {
-            'description': forms.Textarea(attrs={'rows': 4}),
+            'description': forms.Textarea(attrs={'rows': 10,'cols': 70}),
             'input_testcase': forms.Textarea(attrs={'rows': 3}),
             'output_testcase': forms.Textarea(attrs={'rows': 3}),
         }

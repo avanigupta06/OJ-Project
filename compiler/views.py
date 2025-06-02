@@ -13,6 +13,7 @@ import subprocess
 
 @login_required
 def run_code_view(request, problem_id):
+    
     problem = get_object_or_404(Problem, id=problem_id)
 
     if request.method == "POST":
@@ -73,8 +74,6 @@ def run_code_view(request, problem_id):
         "req_problem": problem,
         "form": form
     })
-
-
 
 
 def run_code(language, code, input_data):
@@ -173,10 +172,14 @@ def run_result(request, submission_id):
     return render(request, "run_result.html", {"submission": submission})
 
 
-from django.core.paginator import Paginator
-
 @login_required
 def submission_list_view(request):
+
+    # Restrict access to only 'setter' and 'admin'
+    if request.user.userextension.user_type not in ['setter', 'admin']:
+        return HttpResponse("You are not authorized to access this page.", status=403)
+
+    
     submissions = CodeSubmission.objects.all().order_by('-timestamp')
     paginator = Paginator(submissions, 10)  # 10 submissions per page
     page_number = request.GET.get('page')
@@ -186,6 +189,7 @@ def submission_list_view(request):
 
 @login_required
 def submission_history_view(request):
+
     submissions = CodeSubmission.objects.filter(user=request.user).select_related('problem').order_by('-timestamp')
     return render(request, 'submission_history.html', {
         "submissions": submissions
