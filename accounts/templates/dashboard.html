@@ -3,74 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <title>OJ Dashboard</title>
-    <!-- Bootstrap CSS CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         html, body {
             height: 100%;
             margin: 0;
         }
-        body {
+        .wrapper {
+            min-height: 100%;
             display: flex;
             flex-direction: column;
-            background-color: #f8f9fa;
         }
-        main {
-            flex: 1; /* Fills remaining height */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 40px 20px;
-        }
-        .hero-section {
-            background-color: #fff;
-            padding: 60px 40px;
-            border-radius: 10px;
-            box-shadow: 0 0 15px rgba(0,0,0,0.05);
-            max-width: 800px;
-            width: 100%;
-            text-align: center;
-        }
-        footer {
-            background-color: #343a40;
-            color: white;
-            text-align: center;
-            padding: 15px 0;
+        .content {
+            flex: 1;
         }
     </style>
 </head>
-<body>
+<body class="wrapper">
 
-    <!-- Header -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <div class="container">
-            <a class="navbar-brand" href="#">OJ Project</a>
-        </div>
-    </nav>
+<!-- Header -->
+<nav class="navbar navbar-expand-md bg-dark sticky-top border-bottom" data-bs-theme="dark">
+  <div class="container">
+    <a class="navbar-brand d-md-none text-light" href="#">OJ Project</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvas" aria-controls="offcanvas" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
 
-    <!-- Main Section -->
-    <main>
-        <div class="hero-section">
-            <h1 class="mb-4">Welcome to the OJ Project</h1>
-            <p class="lead mb-4">
-                This is an online judge system where users can solve programming problems by submitting code in Python and C++. 
-                Admins and problem setters can manage the problems and view submissions.
-            </p>
-            <div class="d-flex justify-content-center gap-3">
-                <a href="{% url 'login' %}" class="btn btn-primary btn-lg">Login</a>
-                <a href="{% url 'register' %}" class="btn btn-outline-primary btn-lg">Register</a>
-            </div>
-        </div>
-    </main>
+    <div class="offcanvas offcanvas-end text-bg-dark" tabindex="-1" id="offcanvas" aria-labelledby="offcanvasLabel">
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasLabel">OJ Project</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      </div>
+      <div class="offcanvas-body">
+        <ul class="navbar-nav flex-grow-1 justify-content-between">
+          <li class="nav-item"><a class="nav-link text-light" href="#">Home</a></li>
+          <li class="nav-item"><a class="nav-link text-light" href="#">Problems</a></li>
+          <li class="nav-item"><a class="nav-link text-light" href="#">Submissions</a></li>
+          <li class="nav-item"><a class="nav-link text-light" href="#">About</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>
 
-    <!-- Footer -->
-    <footer>
-        <div class="container">
-            <p class="mb-0">© 2025 OJ Project. All rights reserved.</p>
-        </div>
-    </footer>
+<!-- Main -->
+<main class="content bg-body-tertiary py-5">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h1 class="display-4 fw-bold">Welcome to the Online Judge Platform</h1>
+      <p class="lead text-muted mt-4 mb-4">Solve coding challenges, run your code instantly, and level up your programming skills.</p>
+      <div class="d-flex justify-content-center gap-3">
+        <a href="{% url 'register' %}" class="btn btn-primary btn-lg">Sign Up</a>
+        <a href="{% url 'login' %}" class="btn btn-outline-primary btn-lg">Login</a>
+      </div>
+    </div>
 
-    <!-- Bootstrap JS (optional) -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <div class="row text-center">
+      <div class="col-md-6 mb-4">
+        <h4>💡 Solve Programming Problems</h4>
+        <p>Choose from beginner to advanced level problems. Practice data structures, algorithms, and real interview questions.</p>
+      </div>
+      <div class="col-md-6 mb-4">
+        <h4>⚙️ Run & Submit Code</h4>
+        <p>Run Python, C++ and C code instantly. Submit your solution and get judged against hidden test cases.</p>
+      </div>
+    </div>
+
+    <div class="row text-center">
+      <div class="col-md-6 mb-4">
+        <h4>📈 Track Your Progress</h4>
+        <p>See which problems you've solved, track your stats, and analyze your submission history.</p>
+      </div>
+      <div class="col-md-6 mb-4">
+        <h4>🛠️ Admin & Problem Setter Tools</h4>
+        <p>Admins can manage problems, review submissions, and add custom test cases easily through the dashboard.</p>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Footer -->
+<footer class="bg-dark text-white text-center py-3 mt-auto">
+  <div class="container">
+    <p class="mb-0">© 2025 OJ Project</p>
+  </div>
+</footer>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>

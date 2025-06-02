@@ -2,93 +2,111 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Add Problem</title>
+    <title>Add Problem | Online Judge</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
-        body {
+        html, body {
+            height: 100%;
+            margin: 0;
+            background-color: #f8f9fa;
+        }
+
+        .wrapper {
             display: flex;
             flex-direction: column;
             min-height: 100vh;
-            background-color: #f8f9fa;
         }
-        main {
+
+        .content {
             flex: 1;
         }
+
+        .card {
+            border-radius: 10px;
+        }
+
         .form-label {
             font-weight: 500;
         }
-        textarea, input {
-            resize: vertical;
+
+        input, textarea, select {
+            border-radius: 8px !important;
+        }
+
+        footer {
+            margin-top: auto;
         }
     </style>
 </head>
-<body>
+<body class="wrapper">
 
-    <!-- Header -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm mb-4">
-        <div class="container">
-            <a class="navbar-brand" href="{% url 'problem_list' %}">Online Judge</a>
-        </div>
-    </nav>
+<!-- Header -->
+<!-- Header -->
+<header class="p-3 text-bg-dark mb-4">
+  <div class="container">
+    <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
 
-    <!-- Main -->
-    <main class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-8">
-                <div class="card border-0 shadow-sm">
-                    <div class="card-header bg-primary text-white py-3">
-                        <h5 class="mb-0">📝 Add a New Problem</h5>
-                    </div>
-                    <div class="card-body">
-                        <form method="POST" novalidate>
-                            {% csrf_token %}
-                            <div class="mb-3">
-                                <label class="form-label">Title</label>
-                                {{ form.title|add_class:"form-control" }}
-                            </div>
+      <!-- Brand -->
+      <a href="/home/problems/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
+        <span class="fs-4 me-3">Online Judge</span>
+      </a>
 
-                            <div class="mb-3">
-                                <label class="form-label">Description</label>
-                                {{ form.description|add_class:"form-control" }}
-                            </div>
+      <!-- Nav Links -->
+      <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+        <li><a href="/home/problems/" class="nav-link px-2 text-white">Problem List</a></li>
+        <li><a href="/home/problem_add/" class="nav-link px-2 text-white">Add Problem</a></li>
+        <li><a href="/home/add-hidden-testcase/" class="nav-link px-2 text-white">Add Hidden Test Case</a></li>
+        <li><a href="/compiler/submissions/" class="nav-link px-2 text-white">Submission List</a></li>
+      </ul>
 
-                            <div class="mb-3">
-                                <label class="form-label">Difficulty</label>
-                                {{ form.difficulty|add_class:"form-select" }}
-                            </div>
+      <!-- Logout button on right -->
+      <ul class="nav ms-auto">
+        <li class="nav-item">
+          <a href="/auth/logout/" class="btn btn-warning text-dark">Logout</a>
+        </li>
+      </ul>
 
-                            <div class="mb-3">
-                                <label class="form-label">Sample Input</label>
-                                {{ form.input_testcase|add_class:"form-control" }}
-                            </div>
+    </div>
+  </div>
+</header>
 
-                            <div class="mb-3">
-                                <label class="form-label">Sample Output</label>
-                                {{ form.output_testcase|add_class:"form-control" }}
-                            </div>
 
-                            <div class="d-flex justify-content-end">
-                                <button type="submit" class="btn btn-success px-4">Add Problem</button>
-                            </div>
-                        </form>
-                    </div>
+<!-- Main Content -->
+<main class="content container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10 col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white py-3">
+                    <h5 class="mb-0">📝 Add a New Problem</h5>
+                </div>
+                <div class="card-body">
+
+                    <form method="POST" novalidate>
+                        {% csrf_token %}
+                        {{ form.as_p }}
+
+                        <div class="text-end">
+                            <button type="submit" class="btn btn-success px-4">Add Problem</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
-    </main>
+    </div>
+</main>
 
-    <!-- Footer -->
-    <footer class="bg-dark text-white text-center py-3 mt-5">
-        <div class="container">
-            <small>© 2025 Online Judge Platform</small>
-        </div>
-    </footer>
+<!-- Footer -->
+<footer class="bg-dark text-white text-center py-3 mt-auto">
+    <div class="container">
+        <p class="mb-0">© 2025 Online Judge</p>
+    </div>
+</footer>
 
-    <!-- Optional Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

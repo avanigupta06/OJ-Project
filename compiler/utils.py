@@ -8,21 +8,21 @@ def get_code_review(code, problem_desc):
     genai.configure(api_key=settings.GEMINI_API_KEY)
     model = genai.GenerativeModel("gemini-2.0-flash")
     prompt = f"""
-You are a code reviewer. Given the following problem description and code:
+        You are a code reviewer. Given the following problem description and code:
 
-Problem:
-{problem_desc}
+        Problem:
+        {problem_desc}
 
-Code:
-{code}
+        Code:
+        {code}
 
-Provide a **short**, plain-text review (under 100 words) with:
-- Key feedback
-- Suggestions for improvement
-- Mention edge cases if needed
+        Provide a **short**, plain-text review (under 500 words) with:
+        - Key feedback
+        - Suggestions for improvement
+        - Mention edge cases if needed
 
-Do NOT include code snippets or examples. Avoid using stars, bullet points, or markdown formatting.
-    """
+        Do NOT include code snippets or examples. Avoid using stars, bullet points, or markdown formatting.
+        """
 
 
     try:

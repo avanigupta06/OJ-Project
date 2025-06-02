@@ -31,35 +31,25 @@
       
       <!-- Brand -->
       <a href="{% url 'problem_list' %}" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
-        <span class="fs-4 me-3">OJ</span>
+        <span class="fs-4 me-3">Online Judge</span>
       </a>
 
       <!-- Nav Links -->
       <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-        <li><a href="#" class="nav-link px-2 text-secondary">Home</a></li>
-        <li><a href="#" class="nav-link px-2 text-white">Features</a></li>
-        <li><a href="#" class="nav-link px-2 text-white">FAQs</a></li>
-        <li><a href="#" class="nav-link px-2 text-white">About</a></li>
 
         <!-- user submission history -->
          {% if user.is_authenticated %}
         <li><a href="{% url 'my_submissions' %}" class="nav-link px-2 text-white">My Submissions</a></li>
         {% endif %}
-      </ul>
+        
+    </ul>
 
-      <!-- Search Form -->
-      <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
-        <input type="search" class="form-control form-control-dark text-bg-dark" placeholder="Search..." aria-label="Search">
-      </form>
-
-      <!-- Logout Form -->
-      <div class="text-end">
-        <form method="post" action="{% url 'logout' %}">
-          {% csrf_token %}
-          <button type="submit" class="btn btn-warning">Logout</button>
-        </form>
-      </div>
-      
+      <ul class="nav ms-auto">
+        <li class="nav-item">
+        <a href="/auth/logout/" class="btn btn-warning text-dark">Logout</a>
+        </li>
+    </ul>
+         
     </div>
   </div>
 </header>
@@ -114,7 +104,7 @@
     <!-- Footer -->
     <footer class="bg-dark text-white text-center py-3 mt-auto">
         <div class="container">
-            <p class="mb-0">© 2025 Online Judge | Built with Django & Bootstrap</p>
+            <p class="mb-0">© 2025 OJ Project</p>
         </div>
     </footer>
 </div>
