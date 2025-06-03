@@ -58,14 +58,19 @@ def run_code_view(request, problem_id):
 
                 submission.output_data = "Accepted" if all_passed else "Rejected"
 
-                # ai review
-                review = get_code_review(language, problem.description)
-                submission.ai_feedback = review
-
 
                 submission.save()
 
                 return redirect("run_result", submission_id=submission.id)
+
+            elif action == "ai_review":
+                review = get_code_review(code, problem.description, language)
+                return render(request, "problem_detail.html", {
+                    "req_problem": problem,
+                    "form": form,
+                    "ai_feedback": review  # pass review to template
+                })
+
 
     else:
         form = CodeSubmissionForm()
