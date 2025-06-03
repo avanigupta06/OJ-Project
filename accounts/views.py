@@ -4,6 +4,9 @@ from django.contrib import messages
 from django.template import loader
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from .models import UserExtension
+
 # Create your views here.
 
 def dashboard(request):
@@ -74,3 +77,17 @@ def logout_user(request):
     logout(request)
     messages.success(request, 'Logged out successfully.')
     return redirect('/auth/login/')
+
+@login_required
+def profile_view(request):
+    user = request.user
+    try:
+        user_extension = user.userextension
+    except UserExtension.DoesNotExist:
+        user_extension = None  # or handle fallback
+
+    context = {
+        'user': user,
+        'user_extension': user_extension
+    }
+    return render(request, 'profile.html', context)

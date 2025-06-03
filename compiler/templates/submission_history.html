@@ -25,12 +25,16 @@
         {% endif %}
       </ul>
 
-      <!-- Logout Button on the right -->
-      <ul class="nav ms-auto">
+    <ul class="nav ms-auto">
+        {% if user.is_authenticated %}
         <li class="nav-item">
-        <a href="/auth/logout/" class="btn btn-warning text-dark">Logout</a>
+            <a href="{% url 'profile' %}" class="btn btn-light me-2">Profile</a>
         </li>
-    </ul>
+        <li class="nav-item">
+            <a href="/auth/logout/" class="btn btn-warning text-dark">Logout</a>
+        </li>
+        {% endif %}
+      </ul>
 
     </div>
   </div>
