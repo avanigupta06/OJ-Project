@@ -7,3 +7,4 @@ __pycache__/
 codes
 inputs
 outputs
+.dockerignore
