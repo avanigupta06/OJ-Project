@@ -45,12 +45,10 @@
 <body class="wrapper">
 
 <!-- Header -->
-<!-- Header -->
 <header class="p-3 text-bg-dark mb-4">
   <div class="container">
     <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
 
-      <!-- Brand -->
       <a href="/home/problems/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
         <span class="fs-4 me-3">Online Judge</span>
       </a>
@@ -58,6 +56,12 @@
       <!-- Nav Links -->
       <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
         <li><a href="/home/problems/" class="nav-link px-2 text-white">Problem List</a></li>
+
+        <!-- user submission history -->
+         {% if user.is_authenticated %}
+        <li><a href="{% url 'my_submissions' %}" class="nav-link px-2 text-white">My Submissions</a></li>
+        {% endif %}
+        
         <li><a href="/home/problem_add/" class="nav-link px-2 text-white">Add Problem</a></li>
         <li><a href="/home/add-hidden-testcase/" class="nav-link px-2 text-white">Add Hidden Test Case</a></li>
         <li><a href="/compiler/submissions/" class="nav-link px-2 text-white">Submission List</a></li>
@@ -106,7 +110,7 @@
 <!-- Footer -->
 <footer class="bg-dark text-white text-center py-3 mt-auto">
     <div class="container">
-        <p class="mb-0">© 2025 Online Judge</p>
+        <p class="mb-0">© 2025 OJ Project</p>
     </div>
 </footer>
 

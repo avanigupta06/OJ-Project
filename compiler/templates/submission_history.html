@@ -18,7 +18,7 @@
 
       <!-- Nav Links -->
       <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-        <li><a href="{% url 'problem_list' %}" class="nav-link px-2 text-white">Problems</a></li>
+        <li><a href="{% url 'problem_list' %}" class="nav-link px-2 text-white">Problem List</a></li>
         <!-- user submission history -->
         {% if user.is_authenticated %}
         <li><a href="{% url 'my_submissions' %}" class="nav-link px-2 text-white">My Submissions</a></li>

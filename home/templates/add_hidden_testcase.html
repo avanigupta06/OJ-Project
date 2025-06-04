@@ -44,6 +44,12 @@
       <!-- Nav Links -->
       <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
         <li><a href="/home/problems/" class="nav-link px-2 text-white">Problem List</a></li>
+
+        <!-- user submission history -->
+         {% if user.is_authenticated %}
+        <li><a href="{% url 'my_submissions' %}" class="nav-link px-2 text-white">My Submissions</a></li>
+        {% endif %}
+
         <li><a href="/home/problem_add/" class="nav-link px-2 text-white">Add Problem</a></li>
         <li><a href="/home/add-hidden-testcase/" class="nav-link px-2 text-white">Add Hidden Test Case</a></li>
         <li><a href="/compiler/submissions/" class="nav-link px-2 text-white">Submission List</a></li>
@@ -89,7 +95,7 @@
 <!-- Footer -->
 <footer class="bg-dark text-white text-center py-3 mt-auto">
     <div class="container">
-        <small>© 2025 Online Judge</small>
+        <small>© 2025 OJ Project</small>
     </div>
 </footer>
 
