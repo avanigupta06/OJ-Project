@@ -1,59 +1,83 @@
-# Online Judge System (OJ-Project)
+# 🧑‍💻 Online Judge System (OJ-Project)
 
-A full-featured Online Judge system built with **Django** that allows users to solve coding problems, run code with custom input, submit for evaluation against hidden test cases, and even receive AI-powered feedback on their solutions.
+A full-featured Online Judge platform built with **Django**, designed to help users practice programming by solving coding problems, executing their code in isolated Docker containers, and receiving AI-powered feedback.
+
+---
 
 ## 🔧 Tech Stack
 
-- **Backend:** Django
+- **Backend:** Django (Python)
 - **Frontend:** HTML, CSS, Bootstrap
-- **Code Execution:** Python & C/C++ using `subprocess` in Docker containers
-- **AI Review:** Code feedback based on problem description
+- **Languages Supported:** Python, C, C++
+- **Code Execution:** Isolated environments via Docker + `subprocess`
+- **AI Review:** Solution feedback based on problem description
 - **Containerization:** Docker
-
-
----
-
-## 👥 User Types
-
-1. **Normal User**
-   - Register and log in
-   - View all coding problems
-   - Track progress: see how many problems are solved (e.g., "3/10 Solved")
-   - Use the editor to:
-     - `Run` code with custom input
-     - `Submit` code for hidden test case validation
-     - Get `AI Review` on solution quality
-   - View submissions in **My Submissions**
-   - View personal info in **My Profile**
-
-2. **Problem Setter**
-   - Normal User functionality
-   - Add new coding problems
-   - Add hidden test cases for problem evaluation
-   - View all user submissions
-
-3. **Admin**
-   - Full control over the platform (extendable)
+- **Deployment:** AWS EC2 + Amazon ECR (Elastic Container Registry)
 
 ---
 
-## 🚀 Features
+## 👥 User Roles
 
-- 🔐 **Authentication:** Role-based login system (normal user, problem setter, admin)
-- 📚 **Problem List:** View all problems, solved status, and problem-specific details
-- 👨‍💻 **Code Editor:** Supports C, C++, Python
-- ⚙️ **Run Code:** Executes code with user-provided input
-- ✅ **Submit Code:** Validates code with hidden test cases, returns verdict
-- 🤖 **AI Review:** Provides code review based on problem description
-- 📈 **Progress Tracking:** Shows solved tag and number of problems solved
-- 👁️ **Submission History:** Users can view all their past submissions
-- 🧪 **Docker Integration:** Isolates code execution for safety
+### 🔹 Normal User
+- Register and log in
+- View coding problems
+- Track progress: “x/y Solved”
+- Interact with code editor:
+  - `Run` code with custom input
+  - `Submit` for evaluation via hidden test cases
+  - Get `AI Review` of submitted code
+- View submission history (`My Submissions`)
+- View personal profile (`My Profile`)
+
+### 🔸 Problem Setter
+- All Normal User features
+- Add new coding problems
+- Add hidden test cases
+- View all user submissions
+
+### 🔺 Admin
+- Full platform control (extendable for moderation, analytics, etc.)
 
 ---
 
-## 🐳 Docker Usage
+## 🚀 Key Features
 
-To run code securely in isolated environments, the platform uses Docker. Make sure Docker is installed and running.
+- 🔐 **Role-Based Authentication** (Normal, Setter, Admin)
+- 📚 **Problem Dashboard** with Solved/Total view
+- 🖊️ **In-browser Code Editor** with support for C, C++, Python
+- ⚙️ **Run Code** with custom input
+- ✅ **Submit Code** evaluated against hidden test cases
+- 🤖 **AI Code Review** for quality feedback
+- 📊 **User Progress Tracking**
+- 👁️ **Submission History**
+- 🐳 **Secure Code Execution via Docker Containers**
+
+---
+
+## 🐳 Docker Integration
+
+Docker ensures secure and isolated code execution. Each code run or submission spins up a Docker container to:
+- Avoid malicious code execution risks
+- Provide language-specific environments
+- Improve system scalability
+
+> ✅ Docker must be installed and running for local development.
+
+---
+
+## ☁️ Deployment (AWS EC2 + ECR)
+
+The system is containerized and deployed to the cloud via:
+- **Amazon EC2**: Hosts the main Django app
+- **Amazon ECR**: Stores and pulls Docker images used in code execution
+
+### 🛠️ Deployment Summary
+- Docker image of the project is pushed to **Amazon ECR**
+- EC2 instance pulls and runs the image
+
+---
+
+## 📸 Screenshots
 
 ![1](https://github.com/user-attachments/assets/0649871c-0093-47ff-9855-338da17f14d8)
 ![18](https://github.com/user-attachments/assets/4ab01247-a1d2-40d5-ad55-4ca6e7d1663e)
