@@ -60,6 +60,7 @@ To run code securely in isolated environments, the platform uses Docker. Make su
 ![19](https://github.com/user-attachments/assets/4e944698-2b49-42c9-bda0-17a8fc9676fd)
 ![6](https://github.com/user-attachments/assets/b09d8ec4-f7e6-4c5c-a01d-607cd5b02d4d)
 ![7](https://github.com/user-attachments/assets/7c8c3bd7-c856-4a30-8426-eb3f64503474)
+![17](https://github.com/user-attachments/assets/38b3d171-bd83-47e9-bd49-bec9504ef3e9)
 ![22](https://github.com/user-attachments/assets/0eafd279-67da-49af-9280-25a1be37f179)
 ![20](https://github.com/user-attachments/assets/ba62c31c-0bee-4176-9923-d347c30c7885)
 ![4](https://github.com/user-attachments/assets/aaa755c2-f0c8-433b-820e-491551a336b2)
