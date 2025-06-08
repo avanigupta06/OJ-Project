@@ -1,6 +1,6 @@
 # 🧑‍💻 Online Judge System (OJ-Project)
 
-A full-featured Online Judge platform built with **Django**, designed to help users practice programming by solving coding problems, executing their code in isolated Docker containers, and receiving AI-powered feedback.
+A full-featured Online Judge platform built with **Django**, designed to help users practice programming by solving coding problems, executing their code in isolated Docker containers, and receiving AI-powered feedback(using Gemini API).
 
 ---
 
@@ -10,7 +10,7 @@ A full-featured Online Judge platform built with **Django**, designed to help us
 - **Frontend:** HTML, CSS, Bootstrap
 - **Languages Supported:** Python, C, C++
 - **Code Execution:** Isolated environments via Docker + `subprocess`
-- **AI Review:** Solution feedback based on problem description
+- **AI Review:** Solution feedback based on problem description(using Gemini API)
 - **Containerization:** Docker
 - **Deployment:** AWS EC2 + Amazon ECR (Elastic Container Registry)
 
