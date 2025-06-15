@@ -1,13 +1,28 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>OJ Dashboard</title>
+    <title>CodeVerdict Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- swiperjs -->
+     <link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
+/>
+<!-- AOS -->
+<link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
     <style>
-        html, body {
+        html {
             height: 100%;
             margin: 0;
+            background-color: #f8f9fa;
+        }
+        body{
+          height: 100%;
+            margin: 0;
+            background-color: #f8f9fa;
+            overflow-x: hidden;
         }
         .wrapper {
             min-height: 100%;
@@ -17,80 +32,640 @@
         .content {
             flex: 1;
         }
+
+        .hero-section {
+            min-height: 60vh; /* Full viewport height */
+            text-align: center;
+            justify-content: center;
+        }
+
+        /* guitar string */
+
+            path {
+            stroke: black;
+            stroke-width: 4;
+            }
+
+            /* Hide on screen widths less than 1500px */
+            @media (max-width: 1500px) {
+              .guitar-string {
+                display: none;
+              }
+            }
+
+            /* for text animation */
+
+            h1, h2{
+            overflow: hidden; 
+          }
+
+
+            h5 span{
+            display: inline-block; /* allows transform to apply properly */
+          }
+
+          /* swiperjs slide type */
+
+          .swiper {
+            width: 100%;
+            height: 50vh;
+            padding: 10vh;
+          }
+
+          .swiper-slide {
+            min-height: 30%;
+            width: 30%;
+          }
+
+          @media (max-width: 724px) {
+            .swiper-slide {
+            min-height: 30%;
+            min-width: 60%;
+          }
+          }
+
+          .message-box {
+          background: #f1f1f1;
+          padding: 20px;
+          border-radius: 12px;
+          box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+          text-align: center;
+        }
+
+        .message-box h5 {
+          margin-bottom: 10px;
+          font-weight: 600;
+        }
+
+        .message-box p {
+          color: #333;
+        }
+
+
+        #image #play {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 20px;
+          height: 20px;
+          background-color: rgba(0, 0, 0, 0.8);
+          transform: translate(-50%, -50%) rotate(45deg);
+          pointer-events: none;
+          z-index: 9999;
+          transition: transform 0.2s ease, width 0.2s ease, height 0.2s ease;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: white;
+          font-size: 12px;
+          font-family: sans-serif;
+          
+        }
+
+        #image #play span {
+          transform: rotate(-45deg); /* To make text straight */
+          opacity: 0;
+          transition: opacity 0.2s ease;
+        }
+
+
+
     </style>
 </head>
-<body class="wrapper">
+
 
 <!-- Header -->
 <nav class="navbar navbar-expand-md bg-dark sticky-top border-bottom" data-bs-theme="dark">
   <div class="container">
-    <a class="navbar-brand d-md-none text-light" href="#">OJ Project</a>
+    <!-- Brand and About -->
+    <div class="d-flex align-items-center">
+      <span class="navbar-brand text-light fw-bold mb-0">CodeVerdict</span>
+      <a class="nav-link text-light ms-3" data-bs-toggle="offcanvas" href="#aboutOffcanvas" role="button">About</a>
+    </div>
+
+    <!-- Toggler for mobile -->
     <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvas" aria-controls="offcanvas" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
+    <!-- Offcanvas menu -->
     <div class="offcanvas offcanvas-end text-bg-dark" tabindex="-1" id="offcanvas" aria-labelledby="offcanvasLabel">
       <div class="offcanvas-header">
-        <h5 class="offcanvas-title" id="offcanvasLabel">OJ Project</h5>
+        <h5 class="offcanvas-title" id="offcanvasLabel">CodeVerdict</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
       </div>
+
       <div class="offcanvas-body">
-        <ul class="navbar-nav flex-grow-1 justify-content-between">
-          <li class="nav-item"><a class="nav-link text-light" href="#">Home</a></li>
-          <li class="nav-item"><a class="nav-link text-light" href="#">Problems</a></li>
-          <li class="nav-item"><a class="nav-link text-light" href="#">Submissions</a></li>
-          <li class="nav-item"><a class="nav-link text-light" href="#">About</a></li>
+        <ul class="nav ms-auto">
+          <li class="nav-item">
+            <a href="{% url 'login' %}" class="btn btn-outline-light me-2 px-4 rounded-pill">Login</a>
+          </li>
+          <li class="nav-item">
+            <a href="{% url 'register' %}" class="btn btn-warning text-dark px-4 rounded-pill">Sign Up</a>
+          </li>
         </ul>
       </div>
     </div>
   </div>
 </nav>
 
+
+
+<!-- About Offcanvas -->
+
+<div class="offcanvas offcanvas-end" tabindex="-1" id="aboutOffcanvas" aria-labelledby="aboutOffcanvasLabel">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="aboutOffcanvasLabel">💡 About CodeVerdict</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body overflow-auto" style="max-height: 80vh;">
+    <p><strong>CodeVerdict</strong> is an intelligent, AI-powered Online Judge platform crafted to simulate real-world coding environments with unmatched accuracy and insight. Built using Django, it combines robust backend security with smart code evaluation to give users an advanced, seamless coding experience.</p>
+    <p>Designed by students, for students, CodeVerdict goes beyond traditional online judges by offering features that boost not just correctness — but understanding, efficiency, and coding discipline.</p>
+    <p>Solve coding challenges, run your code instantly, and level up your programming skills.</p>
+    <hr>
+    <h6>🔍 Why CodeVerdict?</h6>
+
+    <p><strong>🧠 AI Review System:</strong><br>
+    Integrated with Gemini API, CodeVerdict doesn’t just tell you what’s wrong — it helps you understand why. After each failed attempt, you receive intelligent hints, AI-generated suggestions, and potential logic flaws, enabling faster learning and deeper insights.</p>
+
+    <p><strong>🔐 Built on Django – Secured by Design:</strong><br>
+    Using Django’s inbuilt protections like CSRF tokens. Security is not an afterthought — it’s a core part of our architecture.</p>
+
+    <p><strong>🛠️ Real-Time Judging + Custom Inputs:</strong><br>
+    Test your code with sample inputs, custom cases, or edge-case scenarios on the fly. Get verdicts like:<br>
+    • ✅ Accepted<br>
+    • ❌ Wrong Answer<br>
+    • ⏱️ Time Limit Exceeded<br>
+    • ⚠️ Compilation Error</p>
+
+    <p><strong>🌐 Multi-Language Support:</strong><br>
+    Currently supports Python, C, and C++, with plans to expand to JavaScript, Java, and more. Each language runs in isolated environments to ensure safe and fair execution.</p>
+
+    <p><strong>📈 Performance Metrics:</strong><br>
+    View detailed stats on:<br>
+    • Submission History<br>
+    • AI Feedback Summary</p>
+
+    <p><strong>🧑‍💻 User Dashboard:</strong><br>
+    Track your performance over time. View:<br>
+    • Problems Solved<br>
+    • Languages Used<br>
+    • Past Submissions</p>
+
+    <hr>
+    <h6>🎯 The CodeVerdict Vision</h6>
+    <blockquote class="blockquote">
+      “We don’t just evaluate your code — we help you grow with it.”
+    </blockquote>
+    <p>At CodeVerdict, we envision a smarter way to prepare for tech interviews, coding rounds, and real-world development challenges. With the integration of AI, developer-centric tools, and a clean UX, we aim to make learning programming:</p>
+    <ul>
+      <li>Personalized</li>
+      <li>Efficient</li>
+      <li>Insightful</li>
+    </ul>
+  </div>
+</div>
+
 <!-- Main -->
-<main class="content bg-body-tertiary py-5">
-  <div class="container">
-    <div class="text-center mb-5">
-      <h1 class="display-4 fw-bold">Welcome to the Online Judge Platform</h1>
-      <p class="lead text-muted mt-4 mb-4">Solve coding challenges, run your code instantly, and level up your programming skills.</p>
-      <div class="d-flex justify-content-center gap-3">
-        <a href="{% url 'register' %}" class="btn btn-primary btn-lg">Sign Up</a>
-        <a href="{% url 'login' %}" class="btn btn-outline-primary btn-lg">Login</a>
+<body id="main" class="wrapper">
+
+<main class="content py-5">
+
+<div class="container my-5 hero-section" >
+  <div class="row align-items-center">
+    
+    <!-- Left: Text -->
+    <div class="col-md-6">
+      <h1 class="fw-bold display-6 mt-4 mb-4" >Welcome to the CodeVerdict</h1>
+      <h5 class="fw-normal text-primary text-sm-end mt-4 mb-4"><span>a digital space where code is judged</span></h5>
+
+      <p id="pp" class="lead text-muted mt-4 mb-4">
+        Join our community of passionate coders where smart coding meets intelligent review. Solve problems, improve your skills, Learn faster, Code better, Grow sharper.
+      </p>
+      <div class="d-flex gap-3 mt-5  mb-5">
+        <a href="{% url 'register' %}" class="btn btn-primary btn-lg rounded-pill">Getting Started <img src="assets/arrow-right.svg" alt=""></a>
+        <a href="{% url 'problem_list' %}" class="btn btn-outline-primary btn-lg rounded-pill">Browse Problems</a>
       </div>
     </div>
 
-    <div class="row text-center">
-      <div class="col-md-6 mb-4">
-        <h4>💡 Solve Programming Problems</h4>
-        <p>Choose from beginner to advanced level problems. Practice data structures, algorithms, and real interview questions.</p>
-      </div>
-      <div class="col-md-6 mb-4">
-        <h4>⚙️ Run & Submit Code</h4>
-        <p>Run Python, C++ and C code instantly. Submit your solution and get judged against hidden test cases.</p>
-      </div>
+    <!-- Right: Image -->
+     {% load static %}
+     
+    <div class="col-md-6 text-center" id="image" style="overflow: hidden;">
+      <div class="cursor" id ="play"><span>PLAY</span></div>
+      <img src="{% static 'assets/21.png' %}" alt="AI Judge" class="img-fluid" id="img" style="max-width: 100%; height: auto;">
     </div>
 
-    <div class="row text-center">
-      <div class="col-md-6 mb-4">
-        <h4>📈 Track Your Progress</h4>
-        <p>See which problems you've solved, track your stats, and analyze your submission history.</p>
+  </div>
+</div>
+
+<!-- Guiter String -->
+    <svg id="string" width="1500" height="200">
+    <path d="M 10 100 Q 500 100 1500 100" fill="transparent"/>
+    </svg>
+  
+
+<!-- Text and image alternate section -->
+
+<div class="headings px-5 py-3" data-aos="flip-up" data-aos-duration="1000" data-aos-once="true"><h2><span>What we bring?</span></h2></div>
+<div class="container py-5">
+
+  <!-- Row 1: Text Left, Image Right -->
+  <div class="row align-items-center mb-5 text-center">
+    <div class="col-md-6">
+      <h4>🎓 Solve Programming Problems</h4>
+      <p>Choose from beginner to advanced level problems. Practice data structures, algorithms, and real interview questions.</p>
+    </div>
+    <div class="col-md-6 text-center" data-aos="fade-right" data-aos-duration="1000">
+      <img src="{% static 'assets/1.png' %}" class="img-fluid" alt="Solve Problems" style="max-height: 300px;">
+    </div>
+  </div>
+
+  <!-- Row 2: Image Left, Text Right -->
+  <div class="row align-items-center mb-5 text-center">
+    <div class="col-md-6 order-md-2">
+      <h4>⚙️ Run & Submit Code</h4>
+      <p>Run Python, C++ and C code instantly. Submit your solution and get judged against hidden test cases.</p>
+    </div>
+    <div class="col-md-6 order-md-1 text-center" data-aos="fade-up" data-aos-duration="1000">
+      <img src="{% static 'assets/12.png' %}" class="img-fluid" id="img1" alt="Run Code" style="max-height: 300px;">
+    </div>
+  </div>
+
+  <!-- Row 3: Text Left, Image Right -->
+  <div class="row align-items-center mb-5 text-center">
+    <div class="col-md-6">
+      <h4>📈 Track Your Progress</h4>
+      <p>See which problems you've solved, track your stats, and analyze your submission history.</p>
+    </div>
+    <div class="col-md-6 text-center" data-aos="fade-left" data-aos-duration="1000">
+      <img src="{% static 'assets/5.png' %}" class="img-fluid" id="img2" alt="Track Progress" style="max-height: 300px;">
+    </div>
+  </div>
+
+  <!-- Row 4: Image Left, Text Right -->
+  <div class="row align-items-center mb-5">
+    <div class="col-md-6 order-md-2 text-center">
+      <h4>🧑‍🏫 Admin & Problem Setter Tools</h4>
+      <p>Admins can manage problems, review submissions, maintain integrity and add custom test cases easily through the dashboard.</p>
+    </div>
+    <div class="col-md-6 order-md-1 text-center" data-aos="fade-down" data-aos-duration="1000">
+      <img src="{% static 'assets/13.png' %}" class="img-fluid" alt="Admin Tools" style="max-height: 300px;">
+    </div>
+  </div>
+
+</div>
+
+
+<!-- swiperjs -->
+
+<div class="headings px-5 py-3" data-aos="flip-down" data-aos-duration="1000" data-aos-once="true"><h2><span>Why choose us?</span></h2></div>
+
+   <!-- Swiper -->
+  <div class="swiper mySwiper" data-aos="zoom-in" data-aos-duration="1000">
+    <div class="swiper-wrapper" >
+
+      <div class="swiper-slide">
+         <div class="message-box">
+        <h5>🎯 Real-Time Code Judging</h5>
+        <p>Submit your code and get instant feedback with detailed output comparison.</p>
       </div>
-      <div class="col-md-6 mb-4">
-        <h4>🛠️ Admin & Problem Setter Tools</h4>
-        <p>Admins can manage problems, review submissions, and add custom test cases easily through the dashboard.</p>
+      </div>
+
+      <div class="swiper-slide">
+        <div class="message-box">
+        <h5>💡 Hints Generation Using AI</h5>
+        <p>Get AI-generated hints tailored to your problem-solving approach for faster learning.</p>
+      </div>
+      </div>
+
+      <div class="swiper-slide">
+        <div class="message-box">
+        <h5>👨‍💻 Personal Progress</h5>
+        <p>Track your submissions and see your problem-solving growth.</p>
+      </div>
+      </div>
+
+      <div class="swiper-slide"><div class="message-box">
+        <h5>🔤 Custom Inputs & Hidden Test Case</h5>
+        <p>See Outputs using your customize inputs along with hidden test cases.</p>
+      </div></div>
+
+      <div class="swiper-slide">
+        <div class="message-box">
+        <h5>✨ Languages</h5>
+        <p>Write your code in your favorite language, as it support 3 programming language.</p>
+      </div>
+      </div>
+
+      <div class="swiper-slide">
+        <div class="message-box">
+        <h5>🛠️ Updates</h5>
+        <p> Currently in beta – expect frequent improvements and new features!.</p>
+      </div>
+      </div>
+
+      <div class="swiper-slide">
+        <div class="message-box">
+        <h5>🔒 User Authentication</h5>
+        <p>Easy and Secure login and registration for every user, register in seconds.</p>
+      </div>
+      </div>
+
+            <div class="swiper-slide">
+        <div class="message-box">
+        <h5>🌟 Clean UI</h5>
+        <p>Bootstrap-powered responsive layout for smooth experience.</p>
+      </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- accordion -->
+<div class="headings px-5 py-4" data-aos="flip-down" data-aos-duration="1000" data-aos-once="true">
+  <h2><span>Common Questions that people ask</span></h2>
+</div>
+
+
+  <div class="box px-5" data-aos="slide-right" data-aos-duration="1000" style="overflow: hidden;">
+  <div class="accordion" id="accordionExample">
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+        Difference between Run Code and Submit Code
+      </button>
+    </h2>
+    <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+      <div class="accordion-body">
+        The "Run Code" option allows you to quickly test your code on provided or custom test cases without formally submitting it, aiding in debugging and iterative development. On the other hand, the "Submit Code" option is used for the formal submission of your solution, initiating an evaluation process where your code is tested against hidden cases to assess both correctness and efficiency. It is essential to use "Run Code" for preliminary testing and debugging before using "Submit Code" to ensure the accuracy and effectiveness of your solution.
       </div>
     </div>
+  </div>
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+        Significance of Data Structures
+      </button>
+    </h2>
+    <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+      <div class="accordion-body">
+        Data structures form the backbone of efficient computer programs, organizing and storing data for optimal access and manipulation. They are the building blocks that enhance algorithmic efficiency, enabling quicker computations and streamlined operations. A solid understanding of data structures is fundamental for crafting scalable and high-performance software solutions in diverse applications.
+      </div>
+    </div>
+  </div>
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+        Time and Space complexity
+      </button>
+    </h2>
+    <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+      <div class="accordion-body">
+        Time and space complexity are critical concepts in computer science, evaluating how efficiently algorithms operate. Time complexity measures an algorithm's runtime, while space complexity gauges its memory usage. These metrics, often expressed in Big O notation, guide developers in optimizing code for scalability. Striking a balance between time and space efficiency is fundamental in algorithm design, influencing applications across diverse fields.
+      </div>
+    </div>
+  </div>
+    <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+        Brute Force vs Optimal solution
+      </button>
+    </h2>
+    <div id="collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+      <div class="accordion-body">
+        Brute force solutions are straightforward, exhaustive approaches to problem-solving, checking every possibility without optimization. While easy to implement, they can be inefficient for large datasets. On the other hand, optimal solutions leverage more sophisticated algorithms to achieve efficiency, often with a focus on reducing time or space complexity. Striking a balance between simplicity and efficiency is key in choosing the right approach.
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+
   </div>
 </main>
 
 <!-- Footer -->
 <footer class="bg-dark text-white text-center py-3 mt-auto">
   <div class="container">
-    <p class="mb-0">© 2025 OJ Project</p>
+    <p class="mb-0">© 2025 CodeVerdict — The Online Judge Platform. All rights reserved.</p>
   </div>
 </footer>
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrollTrigger.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script src="dashboard.js"></script>
+<!-- AOS -->
+<script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+
+<!-- swiperjs slide -->
+<script>
+
+  AOS.init();
+
+  
+    var swiper = new Swiper(".mySwiper", {
+      slidesPerView: "auto",
+      spaceBetween: 100,
+
+    });
+
+
+// my js 
+
+
+//bounce image
+gsap.fromTo(".img-fluid",{
+  y: 0,
+}, {
+  y: -10,
+  repeat: -1,
+  yoyo: true,
+  ease: "sine.inOut",
+  stagger: 0.001,
+});
+
+//rotate
+  gsap.from("#img", {
+    rotate: 90,
+    scale: 0,
+    opacity: 0,
+    duration: 1,
+    ease: "expo.out"
+   });
+
+//cursor
+
+const cursor = document.querySelector("#play");
+const cursorText = cursor.querySelector("span");
+const image = document.querySelector("#img");
+
+// Show and move cursor only when hovering on image
+image.addEventListener("mouseenter", function (e) {
+  gsap.to(cursor, {
+    scale: 1,
+    width: 80,
+    height: 80,
+    backgroundColor: "rgba(0,0,0,0.9)",
+    duration: 0.2
+  });
+  gsap.to(cursorText, {
+    opacity: 1,
+    duration: 0.2
+  });
+  cursor.style.display = "flex"; // Make sure it's visible
+});
+
+// Move cursor only while on image
+image.addEventListener("mousemove", function (e) {
+  gsap.to(cursor, {
+    x: e.clientX,
+    y: e.clientY,
+    duration: 0.1,
+    ease: "power2.out"
+  });
+});
+
+// Hide cursor when leaving image
+image.addEventListener("mouseleave", function () {
+  gsap.to(cursor, {
+    scale: 0,
+    duration: 0.2
+  });
+  gsap.to(cursorText, {
+    opacity: 0,
+    duration: 0.2
+  });
+});
+
+
+//guitar string
+
+const string = document.querySelector("#string");
+const pathElement = string.querySelector("path");
+
+let finalPath = "M 10 100 Q 500 100 1500 100";
+
+// When mouse moves over the string
+string.addEventListener("mousemove", function (e) {
+  const rect = string.getBoundingClientRect(); // Get SVG's bounding box
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
+
+  const path = `M 10 100 Q ${x} ${y} 1500 100`;
+
+  gsap.to(pathElement, {
+    attr: { d: path },
+    duration: 0.3,
+    ease: "power3.out"
+  });
+});
+
+// When mouse leaves the string area
+string.addEventListener("mouseleave", function () {
+  gsap.to(pathElement, {
+    attr: { d: finalPath },
+    duration: 1.5,
+    ease: "elastic.out(1, 0.2)"
+  });
+});
+
+
+
+// full text
+function breakH5Text() {
+  var h5 = document.querySelector("h5");
+  var h5text = h5.textContent;
+
+  var splittedtext = h5text.split("");
+
+  var clutter = "";
+
+  splittedtext.forEach(function (e) {
+    if (e === " ") {
+      clutter += `<span>&nbsp;</span>`;
+    } else {
+      clutter += `<span>${e}</span>`;
+    }
+  });
+
+  h5.innerHTML = clutter;
+}
+
+breakH5Text(); 
+
+const tl = gsap.timeline();
+
+// expand
+gsap.from("h1", {
+  scale: 0,
+  opacity: 0,
+  duration: 0.5,
+  stagger: 0.01,
+  ease: "back.out(1.7)",
+});
+
+// animate h5
+tl.from("h5 span", {
+  y: 50,
+  opacity: 0,
+  duration: 1,
+  delay: 0.5,
+  stagger: 0.01,
+});
+
+// animate p
+tl.from("#pp", {
+  x: -100,
+  opacity: 0,
+  duration: 1,
+  stagger: 0.01,
+  ease: "power4.out",
+});
+
+
+
+
+
+
+// function breakH1Text(){
+
+// var h1 = document.querySelector("h1");
+// var h1text = h1.textContent;
+
+
+// var splittedtext = h1text.split("")
+
+// var clutter = ""
+
+// splittedtext.forEach(function(e){
+//   if (e === " ") {
+//       clutter += `<span>&nbsp;</span>`;  // Handle space properly
+//     } else {
+//       clutter += `<span>${e}</span>`;
+//     }
+// })
+
+// h1.innerHTML = clutter
+// }
+
+// breakH1Text()
+
+// tl.from("h1 span",{
+//   y: 50,
+//   opacity: 0,
+//   duration: 1,
+//   delay: 0.5,
+//   stagger:0.4,
+// })
+
+</script>
+
 
 </body>
 </html>
+

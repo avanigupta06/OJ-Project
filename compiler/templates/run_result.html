@@ -4,22 +4,87 @@
     <meta charset="UTF-8">
     <title>Submission Result</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    
+    <style>
+        html, body {
+            height: 100%;
+        }
+        .wrapper {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .content {
+            flex: 1 0 auto;
+        }
+        footer {
+            flex-shrink: 0;
+        }
+    </style>
 </head>
 <body>
+
+    <div class="wrapper">
+<!-- Header -->
+<header class="p-3 text-bg-dark mb-4">
+  <div class="container">
+    <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+      
+      <a href="{% url 'dashboard' %}" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
+        <span class="fs-4 me-3 fw-bold">CodeVerdict</span>
+      </a>
+
+      <!-- Nav Links -->
+      <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+
+        <li><a href="/home/problems/" class="nav-link px-2 text-white">Problem List</a></li>
+
+
+        {% if user.is_authenticated %}
+            {% if user.userextension.user_type == 'setter' or user.userextension.user_type == 'admin' %}
+                <li><a href="/home/problem_add/" class="nav-link px-2 text-white">Add Problem</a></li>
+                <li><a href="/home/add-hidden-testcase/" class="nav-link px-2 text-white">Add Hidden Test Case</a></li>
+                <li><a href="/compiler/submissions/" class="nav-link px-2 text-white">Submission List</a></li>
+            {% endif %}
+        {% endif %}
+
+    </ul>
+
+    <ul class="nav ms-auto">
+        {% if user.is_authenticated %}
+        <li class="nav-item">
+            <a href="{% url 'user_dashboard' %}" class="btn btn-light me-2 rounded-pill">User Dashboard</a>
+        </li>
+        <li class="nav-item">
+            <a href="/auth/logout/" class="btn btn-warning text-dark rounded-pill">Logout</a>
+        </li>
+        {% endif %}
+      </ul>
+         
+    </div>
+  </div>
+</header>
+
+
     <div class="container mt-5">
         <div class="card">
             <div class="card-header bg-primary text-white">
                 Submission Result
             </div>
             <div class="card-body">
-                <h5 class="card-title">Verdict: 
+                <h5 class="card-title">Verdict:
                     {% if submission.output_data == "Accepted" %}
                         <span class="text-success">✔ Accepted</span>
+                    {% elif submission.output_data == "TLE" %}
+                        <span class="text-warning">⏰ Time Limit Exceeded</span>
+                    {% elif submission.output_data == "Compile Error" %}
+                        <span class="text-warning">⚠️ Compile Error</span>
+                    {% elif submission.output_data == "RE" %}
+                        <span class="text-danger">💥 Runtime Error</span>
                     {% else %}
                         <span class="text-danger">✘ Rejected</span>
                     {% endif %}
                 </h5>
+
                 <hr>
                 <p><strong>Language:</strong> {{ submission.language }}</p>
                 <p><strong>Code:</strong></p>
@@ -29,8 +94,25 @@
 
 
         <div class="mt-3">
-            <a href="{% url 'problem_detail' submission.problem.id %}" class="btn btn-outline-primary">Back to Problem</a>
+            <a href="{% url 'back_to_problem' submission.problem.id submission.id %}" class="btn btn-outline-primary rounded-pill">Back to Problem</a>
+
+
         </div>
     </div>
+     <!-- Footer -->
+<footer class="bg-dark text-white text-center py-3 mt-auto">
+    <div class="container">
+        <p class="mb-0">© 2025 CodeVerdict — The Online Judge Platform. All rights reserved.</p>
+    </div>
+</footer>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- ✅ Added to prevent form resubmission warning -->
+<script>
+  if (window.history.replaceState) {
+    window.history.replaceState(null, null, window.location.href);
+  }
+</script>
 </body>
 </html>

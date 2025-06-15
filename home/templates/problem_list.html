@@ -29,8 +29,8 @@
   <div class="container">
     <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
       
-      <a href="{% url 'problem_list' %}" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
-        <span class="fs-4 me-3">Online Judge</span>
+      <a href="{% url 'dashboard' %}" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
+        <span class="fs-4 me-3 fw-bold">CodeVerdict</span>
       </a>
 
       <!-- Nav Links -->
@@ -38,10 +38,6 @@
 
         <li><a href="/home/problems/" class="nav-link px-2 text-white">Problem List</a></li>
 
-        <!-- user submission history -->
-         {% if user.is_authenticated %}
-        <li><a href="{% url 'my_submissions' %}" class="nav-link px-2 text-white">My Submissions</a></li>
-        {% endif %}
 
         {% if user.is_authenticated %}
             {% if user.userextension.user_type == 'setter' or user.userextension.user_type == 'admin' %}
@@ -51,17 +47,15 @@
             {% endif %}
         {% endif %}
 
-
-        
     </ul>
 
     <ul class="nav ms-auto">
         {% if user.is_authenticated %}
         <li class="nav-item">
-            <a href="{% url 'profile' %}" class="btn btn-light me-2">Profile</a>
+            <a href="{% url 'user_dashboard' %}" class="btn btn-light me-2 rounded-pill">User Dashboard</a>
         </li>
         <li class="nav-item">
-            <a href="/auth/logout/" class="btn btn-warning text-dark">Logout</a>
+            <a href="/auth/logout/" class="btn btn-warning text-dark rounded-pill">Logout</a>
         </li>
         {% endif %}
       </ul>
@@ -105,7 +99,7 @@
                         </span>
                     </td>
                     <td>
-                        <a href="{% url 'problem_detail' problem.id %}" class="btn btn-primary btn-sm">Solve Now</a>
+                        <a href="{% url 'problem_detail' problem.id %}" class="btn btn-primary btn-sm rounded-pill">Solve Now</a>
                     </td>
                 </tr>
                 {% empty %}
@@ -118,11 +112,11 @@
     </div>
 
     <!-- Footer -->
-    <footer class="bg-dark text-white text-center py-3 mt-auto">
-        <div class="container">
-            <p class="mb-0">© 2025 OJ Project</p>
-        </div>
-    </footer>
+<footer class="bg-dark text-white text-center py-3 mt-auto">
+    <div class="container">
+        <p class="mb-0">© 2025 CodeVerdict — The Online Judge Platform. All rights reserved.</p>
+    </div>
+</footer>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

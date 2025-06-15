@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Cache-Control" content="no-store" />
+  <title>User Dashboard - CodeVerdict</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <style>
+    body {
+      background: #f5f7fa;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    header, footer {
+      background-color: #212529;
+      color: white;
+    }
+    .profile-card, .stats-card, .submission-list, .user-details-card {
+      background: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 12px rgb(0 0 0 / 0.1);
+    }
+    .stats-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 24px rgb(0 0 0 / 0.15);
+    }
+    .badge-accepted {
+      background-color: #198754;
+    }
+    .badge-rejected {
+      background-color: #dc3545;
+    }
+    a {
+      text-decoration: none;
+      color: #0d6efd;
+    }
+  </style>
+</head>
+<body class="d-flex flex-column min-vh-100">
+
+  <!-- Header -->
+  <header class="p-3 text-bg-dark mb-4">
+  <div class="container">
+    <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+      
+      <a href="{% url 'dashboard' %}" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
+        <span class="fs-4 me-3 fw-bold">CodeVerdict</span>
+      </a>
+
+      <!-- Nav Links -->
+      <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+        <li><a href="{% url 'problem_list' %}" class="nav-link px-2 text-white">Problem List</a></li>
+
+        {% if user.userextension.user_type == 'setter' or user.userextension.user_type == 'admin' %}
+          <li><a href="/home/problem_add/" class="nav-link px-2 text-white">Add Problem</a></li>
+          <li><a href="/home/add-hidden-testcase/" class="nav-link px-2 text-white">Add Hidden Test Case</a></li>
+          <li><a href="/compiler/submissions/" class="nav-link px-2 text-white">Submission List</a></li>
+        {% endif %}
+
+      </ul>
+
+      <ul class="nav ms-auto">
+        {% if user.is_authenticated %}
+        <li class="nav-item">
+          <a href="{% url 'user_dashboard' %}" class="btn btn-light me-2 rounded-pill">User Dashboard</a>
+        </li>
+        <li class="nav-item">
+          <a href="/auth/logout/" class="btn btn-warning text-dark rounded-pill">Logout</a>
+        </li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</header>
+
+  <!-- Main Content -->
+  <main class="container flex-grow-1 mb-5">
+    <div class="row g-4">
+
+      <!-- User Profile -->
+      <div class="col-lg-4">
+        <div class="profile-card text-center">
+          <h3 class="fw-bold">{{ user.username }}</h3>
+          <p class="text-muted">{{ user.email }}</p>
+          <p><strong>Full Name:</strong> {{ user_extension.full_name }}</p>
+          <p>
+            <strong>User Type:</strong>
+            <span class="badge 
+              {% if user_extension.user_type == 'admin' %}bg-danger
+              {% elif user_extension.user_type == 'setter' %}bg-warning text-dark
+              {% else %}bg-secondary
+              {% endif %}">
+              {{ user_extension.get_user_type_display }}
+            </span>
+          </p>
+        </div>
+      </div>
+
+      <!-- Stats and All Submissions -->
+      <div class="col-lg-8">
+        <div class="row g-4">
+          <div class="col-md-6">
+            <div class="stats-card text-center">
+              <h5 class="text-muted">Problems Solved</h5>
+              <h2 class="fw-bold text-success">{{ solved_count }}</h2>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="stats-card text-center">
+              <h5 class="text-muted">Total Submissions</h5>
+              <h2 class="fw-bold text-primary">{{ submissions_count }}</h2>
+            </div>
+          </div>
+
+          <div class="col-12">
+            <div class="submission-list">
+              <h5 class="mb-3 fw-bold">Submissions History</h5>
+              {% if submissions %}
+              <div class="table-responsive">
+                <table class="table table-striped align-middle">
+                  <thead class="table-dark">
+                    <tr>
+                      <th>Problem</th>
+                      <th>Language</th>
+                      <th>Status</th>
+                      <th>Submission Time</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for sub in page_obj %}
+
+                    <tr>
+                      <td><a href="{% url 'problem_detail' sub.problem.id %}">{{ sub.problem.title }}</a></td>
+                      <td>{{ sub.language }}</td>
+                      <td>
+                        {% if sub.output_data == "Accepted" %}
+                          <span class="text-success fw-semibold">Accepted</span>
+                        {% elif sub.output_data == "TLE" %}
+                          <span class="text-warning fw-semibold">TLE</span>
+                        {% elif sub.output_data == "Compile Error" %}
+                          <span class="text-warning fw-semibold">CE</span>
+                        {% elif sub.output_data == "RE" %}
+                          <span class="text-danger">RE</span>
+                        {% else %}
+                          <span class="text-danger fw-semibold">Rejected</span>
+                        {% endif %}
+                      </td>
+
+                      <td>{{ sub.timestamp|date:"M d, Y H:i" }}</td>
+                      <td><a href="{% url 'run_result' sub.id %}" class="btn btn-sm btn-outline-primary rounded-pill">View</a></td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+
+              
+              <!-- Pagination -->
+    <nav class="mt-4">
+        <ul class="pagination">
+            {% for page in page_obj.paginator.page_range %}
+                <li class="page-item {% if page_obj.number == page %}active{% endif %}">
+                    <a class="page-link" href="?page={{ page }}">{{ page }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </nav>
+    {% else %}
+    <div class="alert alert-info">No submissions available.</div>
+    {% endif %}
+
+
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-dark text-white text-center py-3 mt-auto">
+  <div class="container">
+    <p class="mb-0">© 2025 CodeVerdict — The Online Judge Platform. All rights reserved.</p>
+  </div>
+</footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
