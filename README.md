@@ -85,6 +85,7 @@ The system is containerized and deployed to the cloud via:
 ![4](screenshot/4.png)
 ![23](screenshot/23.png)
 ![15](screenshot/15.png)
+![9](screenshot/9.png)
 ![18](screenshot/18.png)
 ![19](screenshot/19.png)
 ![8](screenshot/8.png)
