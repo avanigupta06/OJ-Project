@@ -1,20 +1,28 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.cache import never_cache
 from django.core.paginator import Paginator
 from compiler.forms import CodeSubmissionForm
 from compiler.models import CodeSubmission
-from home.models import Problem, HiddenTestCase
+from home.models import Problem, HiddenTestCase, StarterCode
 from compiler.utils import get_code_review 
 from django.conf import settings
 from pathlib import Path
+from django.contrib import messages
+from subprocess import TimeoutExpired
 import uuid
 import os
 import subprocess
 
+@never_cache
 @login_required
 def run_code_view(request, problem_id):
     
     problem = get_object_or_404(Problem, id=problem_id)
+
+    # Get all starter codes once
+    starter_codes = StarterCode.objects.all()
+    starter_code_dict = {sc.language: sc.code for sc in starter_codes}
 
     if request.method == "POST":
         form = CodeSubmissionForm(request.POST)
@@ -25,14 +33,40 @@ def run_code_view(request, problem_id):
             input_data = form.cleaned_data["input_data"]
 
             if action == "run":
+
+                # Check if code is empty
+                if not code.strip():
+                    messages.error(request, "No code is given.")
+                    return render(request, "problem_detail.html", {
+                    "req_problem": problem,
+                    "form": form,
+                    "starter_codes": starter_code_dict
+                })
+
                 # Just run code (do not save)
-                output = run_code(language, code, input_data)
+                output, _ = run_code(language, code, input_data)
+                form = CodeSubmissionForm(initial={
+                    "code": code,
+                    "language": language,
+                    "input_data": input_data
+                })
                 return render(request, "problem_detail.html", {
                     "req_problem": problem,
                     "form": form,
-                    "output": output
+                    "output": output,
+                    "starter_codes": starter_code_dict
                 })
 
+            elif action == "clear":
+            # Clear the form by creating a fresh instance
+                form = CodeSubmissionForm()
+                return render(request, "problem_detail.html", {
+                    "req_problem": problem,
+                    "form": form,
+                    "output": "",
+                    "starter_codes": starter_code_dict
+                })
+            
             elif action == "submit":
                 # save form
                 submission = form.save(commit=False)
@@ -42,22 +76,26 @@ def run_code_view(request, problem_id):
                 submission.expected_output = problem.output_testcase
 
                 hidden_testcases = HiddenTestCase.objects.filter(problem=problem)
-                all_passed = True
+
+                verdict = "Accepted"
 
                 for test in hidden_testcases:
-                    test_output = run_code(
-                        language,
-                        code,
-                        test.input_data
-                    ).strip()
+                    test_output, status = run_code(language, code, test.input_data)
+                    test_output = test_output.strip()
                     expected_output = test.expected_output.strip()
 
-                    if test_output != expected_output:
-                        all_passed = False
+                    if status == "TLE":
+                        verdict = "TLE"
+                        break
+                    elif status == "CE":
+                        verdict = "Compile Error"
+                        break
+                    elif test_output != expected_output:
+                        verdict = "Rejected"
                         break
 
-                submission.output_data = "Accepted" if all_passed else "Rejected"
 
+                submission.output_data = verdict
 
                 submission.save()
 
@@ -68,7 +106,8 @@ def run_code_view(request, problem_id):
                 return render(request, "problem_detail.html", {
                     "req_problem": problem,
                     "form": form,
-                    "ai_feedback": review  # pass review to template
+                    "ai_feedback": review,  # pass review to template
+                    "starter_codes": starter_code_dict
                 })
 
 
@@ -77,7 +116,8 @@ def run_code_view(request, problem_id):
 
     return render(request, "problem_detail.html", {
         "req_problem": problem,
-        "form": form
+        "form": form,
+        "starter_codes": starter_code_dict
     })
 
 
@@ -117,66 +157,109 @@ def run_code(language, code, input_data):
     with open(output_file_path, "w") as output_file:
         pass
 
-    if language == "cpp":
-        executable_path = codes_dir / unique
-        compile_result = subprocess.run(
+    try:
+        if language == "cpp":
+            executable_path = codes_dir / unique
+            compile_result = subprocess.run(
                 ["g++", str(code_file_path), "-o", str(executable_path)],
                 stdout=subprocess.PIPE, stderr=subprocess.PIPE
             )
-        if compile_result.returncode == 0:
-            with open(input_file_path, "r") as input_file, open(output_file_path, "w") as output_file:
-                subprocess.run(
-                    [str(executable_path)],
-                    stdin=input_file,
-                    stdout=output_file,
-                    stderr=subprocess.STDOUT,
-                    timeout=5
-                )
-        else:
+            if compile_result.returncode == 0:
+                try:
+                    with open(input_file_path, "r") as input_file, open(output_file_path, "w") as output_file:
+                        result = subprocess.run(
+                        [str(executable_path)],
+                        stdin=input_file,
+                        stdout=output_file,
+                        stderr=subprocess.PIPE,
+                        timeout=5
+                        )
+                        if result.returncode != 0:
+                            error_msg = result.stderr.decode('utf-8')
+                            if not error_msg:
+                                error_msg = "Runtime Error: Program exited with non-zero status."
+                            return error_msg, "RE"
+                except TimeoutExpired:
+                 return "Time Limit Exceeded", "TLE"
+
+            else:
             # Capture compile errors
-            return compile_result.stderr.decode('utf-8')
+             return compile_result.stderr.decode('utf-8'), "CE"
+
         
-    elif language == "c":
-        executable_path = codes_dir / unique
-        compile_result = subprocess.run(
+        elif language == "c":
+            executable_path = codes_dir / unique
+            compile_result = subprocess.run(
                 ["gcc", str(code_file_path), "-o", str(executable_path)],
                 stdout=subprocess.PIPE, stderr=subprocess.PIPE
             )
-        if compile_result.returncode == 0:
-            with open(input_file_path, "r") as input_file, open(output_file_path, "w") as output_file:
-                subprocess.run(
-                    [str(executable_path)],
+            if compile_result.returncode == 0:
+                try:
+                    with open(input_file_path, "r") as input_file, open(output_file_path, "w") as output_file:
+                        result = subprocess.run(
+                        [str(executable_path)],
+                        stdin=input_file,
+                        stdout=output_file,
+                        stderr=subprocess.PIPE,
+                        timeout=5
+                        )
+                        if result.returncode != 0:
+                            error_msg = result.stderr.decode('utf-8')
+                            if not error_msg:
+                                error_msg = "Runtime Error: Program exited with non-zero status."
+                            return error_msg, "RE"
+                except TimeoutExpired:
+                    return "Time Limit Exceeded", "TLE"
+
+            else:
+            # Capture compile errors
+                return compile_result.stderr.decode('utf-8'), "CE"
+
+
+        elif language == "python":
+            python_cmd = "python" if os.name == "nt" else "python3"
+            try:
+                with open(input_file_path, "r") as input_file, open(output_file_path, "w") as output_file:
+                    result = subprocess.run(
+                    [python_cmd, str(code_file_path)],
                     stdin=input_file,
                     stdout=output_file,
-                    stderr=subprocess.STDOUT,
+                    stderr=subprocess.PIPE,
                     timeout=5
-                )
-        else:
-            # Capture compile errors
-            return compile_result.stderr.decode('utf-8')
-
-    elif language == "python":
-        python_cmd = "python" if os.name == "nt" else "python3"
-        with open(input_file_path, "r") as input_file, open(output_file_path, "w") as output_file:
-            subprocess.run(
-                [python_cmd, str(code_file_path)],
-                stdin=input_file,
-                stdout=output_file,
-                stderr=subprocess.STDOUT,
-                timeout=5
-        )
-
-    with open(output_file_path, "r") as output_file:
-        output_data = output_file.read()
-
-    return output_data
+                    )
+                    if result.returncode != 0:
+                        error_msg = result.stderr.decode('utf-8')
+                        if not error_msg:
+                            error_msg = "Runtime Error: Program exited with non-zero status."
+                        return error_msg, "RE"
+            except TimeoutExpired:
+                return "Time Limit Exceeded", "TLE"
 
 
+        with open(output_file_path, "r") as output_file:
+            output_data = output_file.read()
+
+        return output_data, "OK"
+    # remove files
+    finally:
+        if code_file_path.exists():
+            os.remove(code_file_path)
+        if input_file_path.exists():
+            os.remove(input_file_path)
+        if output_file_path.exists():
+            os.remove(output_file_path)
+        if language in ["c", "cpp"] and executable_path.exists():
+            os.remove(executable_path)
+
+
+
+@never_cache
+@login_required
 def run_result(request, submission_id):
     submission = get_object_or_404(CodeSubmission, id=submission_id)
     return render(request, "run_result.html", {"submission": submission})
 
-
+@never_cache
 @login_required
 def submission_list_view(request):
 
@@ -192,10 +275,23 @@ def submission_list_view(request):
     
     return render(request, "submission_list.html", {"page_obj": page_obj})
 
+@never_cache
 @login_required
-def submission_history_view(request):
+def back_to_problem_view(request, problem_id, submission_id):
+    problem = get_object_or_404(Problem, id=problem_id)
+    submission = get_object_or_404(CodeSubmission, id=submission_id, user=request.user)
 
-    submissions = CodeSubmission.objects.filter(user=request.user).select_related('problem').order_by('-timestamp')
-    return render(request, 'submission_history.html', {
-        "submissions": submissions
+    # Pre-fill the form
+    form = CodeSubmissionForm(initial={
+        "code": submission.code,
+        "language": submission.language,
+    })
+    # Add this part to get all starter codes
+    starter_codes = StarterCode.objects.all()
+    starter_code_dict = {sc.language: sc.code for sc in starter_codes}
+
+    return render(request, "problem_detail.html", {
+        "req_problem": problem,
+        "starter_codes": starter_code_dict,
+        "form": form # This shows last result
     })

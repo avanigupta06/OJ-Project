@@ -27,3 +27,12 @@ class HiddenTestCase(models.Model):
 
     def __str__(self):
         return f"Hidden TestCase for Problem {self.problem.title}"
+    
+class StarterCode(models.Model):
+    LANGUAGE_CHOICES = [
+        ('python', 'Python'),
+        ('cpp', 'C++'),
+        ('c', 'C'),
+    ]
+    language = models.CharField(max_length=10, choices=LANGUAGE_CHOICES)
+    code = models.TextField()

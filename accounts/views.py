@@ -4,8 +4,12 @@ from django.contrib import messages
 from django.template import loader
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
+from django.views.decorators.cache import never_cache
 from django.contrib.auth.decorators import login_required
 from .models import UserExtension
+from compiler.models import CodeSubmission
+from accounts.models import UserExtension
+from django.core.paginator import Paginator
 
 # Create your views here.
 
@@ -13,6 +17,10 @@ def dashboard(request):
     return render(request, 'dashboard.html')
 
 def register_user(request):
+    # clear all previous messages
+    list(messages.get_messages(request))
+
+
     if request.method == 'POST':
         username = request.POST.get('username')
         fullname = request.POST.get('fullname')
@@ -47,6 +55,9 @@ def register_user(request):
 
 
 def login_user(request):
+    # clear all previous messages
+    list(messages.get_messages(request))
+
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
@@ -75,19 +86,45 @@ def login_user(request):
 
 def logout_user(request):
     logout(request)
+    request.session.flush()
+    # clear all previous messages
+    list(messages.get_messages(request))
+
     messages.success(request, 'Logged out successfully.')
     return redirect('/auth/login/')
 
+@never_cache
 @login_required
-def profile_view(request):
+def user_dashboard(request):
     user = request.user
-    try:
-        user_extension = user.userextension
-    except UserExtension.DoesNotExist:
-        user_extension = None  # or handle fallback
+    user_extension = UserExtension.objects.get(user=user)
+    
+    # Get all submissions by the user (latest first)
+    submissions = CodeSubmission.objects.filter(user=request.user).select_related('problem').order_by('-timestamp')
+
+    # Count how many problems the user has successfully solved
+    solved_problems = (
+        CodeSubmission.objects.filter(user=user, output_data="Accepted")
+        .values_list('problem', flat=True)
+        .distinct()
+    )
+    solved_count = solved_problems.count()
+
+    # Total submissions made by user
+    submissions_count = submissions.count()
+
+    # pagination
+    paginator = Paginator(submissions, 10)  # 10 submissions per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
 
     context = {
         'user': user,
-        'user_extension': user_extension
+        'user_extension': user_extension,
+        'submissions': submissions,
+        'solved_count': solved_count,
+        'page_obj': page_obj,
+        'submissions_count': submissions_count,
     }
-    return render(request, 'profile.html', context)
+
+    return render(request, 'user_dashboard.html', context)

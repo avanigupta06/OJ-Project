@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
-from home.models import Problem
+from django.views.decorators.cache import never_cache
+from home.models import Problem, StarterCode
 from compiler.forms import CodeSubmissionForm
 from compiler.models import CodeSubmission
 from home.forms import ProblemForm, HiddenTestCaseForm
@@ -30,14 +31,21 @@ def problem_list(request):
 
 def problem_detail(request, id):
     req_problem = Problem.objects.get(id=id)
+
+    # Fetch all starter codes for the problem and convert to dict
+    starter_codes = StarterCode.objects.all()
+    starter_code_dict = {sc.language: sc.code for sc in starter_codes}
+
     form = CodeSubmissionForm()
     template = loader.get_template("problem_detail.html")
     context = {
         "req_problem":req_problem,
+        "starter_codes": starter_code_dict,
         "form": form,
     }
     return HttpResponse(template.render(context, request))
 
+@never_cache
 @login_required
 def add_problem(request):
 
@@ -55,7 +63,7 @@ def add_problem(request):
     
     return render(request, 'add_problem.html', {'form': form})
 
-
+@never_cache
 @login_required
 def add_hidden_testcase(request):
 
@@ -71,3 +79,5 @@ def add_hidden_testcase(request):
     else:
         form = HiddenTestCaseForm()
     return render(request, 'add_hidden_testcase.html', {'form': form})
+
+
