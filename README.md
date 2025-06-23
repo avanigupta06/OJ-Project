@@ -2,6 +2,8 @@
 
 A full-featured Online Judge platform built with **Django**, designed to help users practice programming by solving coding problems, executing their code in isolated Docker containers, and receiving AI-powered feedback(using Gemini API).
 
+**Website link-** https://codeverdict.space/ 
+
 ---
 
 ## 🔧 Tech Stack
